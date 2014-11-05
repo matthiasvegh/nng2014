@@ -6,9 +6,9 @@ void floodFill(const Status& status, Point p0, Array<bool>& result)
 	result.fill(false);
 
 	std::vector<Point> pointsToVisit;
-	pointsToVisit.reserve(status.width()*status.height());
+	pointsToVisit.reserve(status.field.width()*status.field.height());
 	pointsToVisit.push_back(p0);
-	Value value = status[p0];
+	Value value = status.field[p0];
 
 	while (!pointsToVisit.empty()) {
 		Point p = pointsToVisit.back();
@@ -16,7 +16,7 @@ void floodFill(const Status& status, Point p0, Array<bool>& result)
 
 		if (!arrayAt(result, p, true)) {
 
-			if (value(status, p) == value) {
+			if (getValue(status, p) == value) {
 				result[p] = true;
 				pointsToVisit.push_back(p+Point::p10);
 				pointsToVisit.push_back(p+Point::pm10);

@@ -4,11 +4,13 @@
 #include "Array.hpp"
 
 using Value = int;
-using Status = Array<Value>;
+struct Status {
+	Array<int> field;
+};
 
-inline Value value(const Status& status, Point p)
+inline Value getValue(const Status& status, Point p)
 {
-	return arrayAt(Status, p, -1);
+	return arrayAt(status.field, p, -1);
 }
 
 #endif /* STATUS_HPP */
