@@ -14,9 +14,31 @@ struct Status {
 	Status& operator=(Status&&) = default;
 };
 
+inline
+bool operator==(const Status& lhs, const Status& rhs)
+{
+	return lhs.field == rhs.field;
+}
+inline
+bool operator!=(const Status& lhs, const Status& rhs)
+{
+	return !(lhs == rhs);
+}
+
 inline Value getValue(const Status& status, Point p)
 {
 	return arrayAt(status.field, p, -1);
+}
+
+namespace std {
+template<>
+struct hash<Status> {
+	size_t operator()(const Status& status) const
+	{
+		return hash<decltype(status.field)>{}(status.field);
+	}
+};
+
 }
 
 #endif /* STATUS_HPP */
