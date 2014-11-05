@@ -7,6 +7,7 @@ using Value = int;
 struct Status {
 	Array<int> field;
 
+	Status() = default;
 	Status(const Status&) = default;
 	Status& operator=(const Status&) = default;
 	Status(Status&&) = default;

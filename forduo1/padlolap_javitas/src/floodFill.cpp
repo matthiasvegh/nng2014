@@ -3,8 +3,6 @@
 
 void floodFill(const Status& status, Point p0, Array<bool>& result)
 {
-	result.fill(false);
-
 	std::vector<Point> pointsToVisit;
 	pointsToVisit.reserve(status.field.width()*status.field.height());
 	pointsToVisit.push_back(p0);
