@@ -8,16 +8,22 @@ void runtests(BloodBank& bank)
 	Batch* first= bank.createBatch();
 
 	const size_t stride = 2;
-	for(size_t i = 0; i < bank.getNumberOfSamples(); i+=stride) {
+	std::vector<size_t> indices;
+	indices.reserve(bank.getNumberOfSamples());
+	for(size_t i = 0; i< bank.getNumberOfSamples(); ++i) {
+		indices.push_back(i);
+	}
+
+	for(std::vector<size_t>::iterator it = indices.begin(); it != indices.end(); it+=stride) {
 		size_t testId = first->addTest();
 		for(size_t j = 0; j < stride; ++j) {
-			first->addSample(testId, j+i);
+			first->addSample(testId, *(it+j));
 		}
 	}
 	if (bank.getNumberOfSamples() % stride) {
 		size_t remainderId = first->addTest();
-		for(size_t i = 0; i < bank.getNumberOfSamples()%stride; ++i) {
-			first->addSample(remainderId, i);
+		for(std::vector<size_t>::iterator it = indices.begin() + ((indices.size() / stride) * stride -1); it != indices.begin(); ++it) {
+			first->addSample(remainderId, *it);
 		}
 	}
 
