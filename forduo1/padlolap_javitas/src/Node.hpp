@@ -20,6 +20,7 @@ struct Node {
 	Node(Status status, const MoveDescriptor& moveDescriptor, Ptr ancestor,
 			int c, int heur, int time):
 				status(std::move(status)),
+				moveDescriptor(moveDescriptor),
 				ancestor(std::move(ancestor)),
 				cost(ancestor ? ancestor->cost + c : c),
 				heur(heur),
@@ -34,13 +35,13 @@ struct Node {
 };
 
 inline
-std::deque<Node::Ptr> pathToBase(const Node::Ptr& node, const Node::Ptr& base)
+std::deque<Node::Ptr> pathToBase(Node::Ptr node, const Node::Ptr& base)
 {
-	deque<Node::Ptr> result;
+	std::deque<Node::Ptr> result;
 	while (node && node != base)
 	{
 		result.push_front(node);
-		node = node->ancestor();
+		node = node->ancestor;
 	}
 	return result;
 }

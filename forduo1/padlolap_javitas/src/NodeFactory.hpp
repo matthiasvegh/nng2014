@@ -1,23 +1,20 @@
-#ifndef NODEFACTORY_HPP
-#define NODEFACTORY_HPP
+#ifndef SRC_NODEFACTORY_HPP
+#define SRC_NODEFACTORY_HPP
 
 #include "Node.hpp"
 #include "HeurCalculator.hpp"
-#include "Status/Status.hpp"
+#include "Status.hpp"
 #include <memory>
 
 class NodeFactory {
 	int numNodes;
-	HeurCalculator::Ptr calculator;
+	HeurCalculator& calculator;
 public:
 	typedef std::shared_ptr<NodeFactory> Ptr;
 
-	NodeFactory(
-			const HeurCalculator::Ptr& calculator,
-			const HeurCalculator::Ptr& experimentalCalculator = HeurCalculator::Ptr()):
+	NodeFactory(HeurCalculator& calculator):
 		numNodes(0),
-		calculator(calculator),
-		experimentalCalculator(experimentalCalculator)
+		calculator(calculator)
 	{}
 	Node::Ptr createNode(
 			const Status & status,
@@ -25,11 +22,11 @@ public:
 			const Node::Ptr& ancestor)
 	{
 		return std::make_shared<Node>(
-				status.state(), moveDescriptor, ancestor, 6,
-				calculator->calculateStatus(status),
+				status, moveDescriptor, ancestor, 6,
+				calculator.calculateStatus(status),
 				++numNodes);
 	}
 };
 
 
-#endif /* NODEFACTORY_HPP */
+#endif /* SRC_NODEFACTORY_HPP */
