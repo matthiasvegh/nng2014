@@ -10,7 +10,7 @@
 
 template<class T>
 void dumpArray(std::ostream &file, const Array<T> table,
-		const std::string &title, int indent) {
+		const std::string &title = "", int indent = 0) {
 	std::string indentString(indent, ' ');
 	if (!title.empty()) {
 		file << indentString << title << std::endl;
@@ -37,7 +37,7 @@ void dumpArray(std::ostream &file, const Array<T> table,
 
 inline
 void dumpStatus(std::ostream &file, const Status &status,
-		const std::string& title , int indent)
+		const std::string& title = "", int indent = 0)
 {
 	dumpArray(file, status.field, title, indent);
 }
