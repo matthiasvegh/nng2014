@@ -6,6 +6,11 @@
 using Value = int;
 struct Status {
 	Array<int> field;
+
+	Status(const Status&) = default;
+	Status& operator=(const Status&) = default;
+	Status(Status&&) = default;
+	Status& operator=(Status&&) = default;
 };
 
 inline Value getValue(const Status& status, Point p)
