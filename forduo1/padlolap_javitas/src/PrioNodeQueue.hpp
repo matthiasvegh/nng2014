@@ -7,7 +7,13 @@
 struct NodeCompare {
 	bool operator()(const Node::Ptr& lhs, const Node::Ptr& rhs)
 	{
-		return lhs->costFgv() > rhs->costFgv();
+		auto costFgv1 = lhs->costFgv();
+		auto costFgv2 = rhs->costFgv();
+
+		if (costFgv1 == costFgv2) {
+			return lhs->time < rhs->time;
+		}
+		return costFgv1 > costFgv2;
 	}
 };
 
