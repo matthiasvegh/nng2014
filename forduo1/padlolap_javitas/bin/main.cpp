@@ -1,8 +1,9 @@
 #include "StatusCreator.hpp"
 #include "DumperFunctions.hpp"
-#include "HeurCalculator.hpp"
-#include "Expander.hpp"
+#include "Solver.hpp"
 #include <stdexcept>
+#include <fstream>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -10,18 +11,21 @@ int main(int argc, char* argv[])
 		throw std::logic_error{"Bad parameter"};
 	}
 	Status status = loadStatusFromFile(argv[1]);
-	dumpStatus(std::cout, status);
+	Solver solver;
+	auto result = solver.solve(status);
 
-	HeurCalculator heurCalculator;
-	std::cout << "heur = " << heurCalculator.calculateStatus(status) << std::endl;
+	if (result.empty()) {
+		std::cout << "No solution." << std::endl;
+	} else {
+		std::ofstream file{"solution.dump", std::ios::out | std::ios::trunc};
+		std::cout << result.size() << "\n";
+		for (const auto& node: result) {
+			const auto& moveDescriptor = node->moveDescriptor;
+			std::cout << moveDescriptor.p1.y << " " << moveDescriptor.p1.x << " " <<
+				moveDescriptor.p2.y << " " << moveDescriptor.p2.x << "\n";
+			dumpNode(file, *node);
+		}
+		std::cout << std::endl;
 
-	VisitedStates visitedStates;
-	PrioNodeQueue queue;
-	Expander expander{visitedStates, queue};
-	expander.expand(status, Node::Ptr{});
-
-	while (queue.size() != 0){
-		auto node = queue.pop();
-		dumpNode(std::cout, *node);
 	}
 }
