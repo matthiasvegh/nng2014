@@ -31,7 +31,9 @@ struct Node {
 	Node(Node&&) = default;
 	Node& operator=(Node&&) = default;
 
-	int costFgv() const { return cost + heur; }
+	int costFgv() const { return cost * !greedy + heur; }
+
+	static bool greedy;
 };
 
 inline
