@@ -2,14 +2,14 @@
 #define VISITEDSTATES_H_
 
 #include "Status.hpp"
-#include <unordered_set>
+#include <unordered_map>
 
 class VisitedStates {
-	typedef std::unordered_set<Status> VisitedStateSet;
+	typedef std::unordered_map<Status, int> VisitedStateSet;
 	VisitedStateSet visitedStates;
 public:
 	VisitedStates() = default;
-	bool checkAndPush(const Status &elem);
+	bool checkAndPush(const Status &elem, int heur);
 	std::size_t size() const
 	{
 		return visitedStates.size();

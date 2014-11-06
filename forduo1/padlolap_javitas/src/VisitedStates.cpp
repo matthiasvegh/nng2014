@@ -1,13 +1,19 @@
 #include "VisitedStates.hpp"
 #include <boost/foreach.hpp>
 
-bool VisitedStates::checkAndPush(const Status &elem)
+bool VisitedStates::checkAndPush(const Status &elem, int heur)
 {
 	auto it = visitedStates.find(elem);
 	if (it == visitedStates.end()) {
-		visitedStates.insert(elem);
+		visitedStates.insert({elem, heur});
 		return true;
 	}
+
+	if (it->second > heur) {
+		it->second = heur;
+		return true;
+	}
+
 	return false;
 }
 

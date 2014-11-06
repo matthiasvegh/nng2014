@@ -21,11 +21,11 @@ void InternalExpander::expandNode(Point p1, Point p2)
 {
 	Status newStatus = base->status;
 	std::swap(newStatus.field[p1], newStatus.field[p2]);
-	if (!owner.visitedStates.checkAndPush(newStatus)) {
-		return;
-	}
 	Node::Ptr node =
 			owner.nodeFactory.createNode(newStatus, MoveDescriptor(p1, p2), base);
+	if (!owner.visitedStates.checkAndPush(newStatus, node->heur)) {
+		return;
+	}
 	owner.queue.push(node);
 	{
 		if (++owner.expandedNodes % 10000 == 0)
@@ -41,7 +41,7 @@ void InternalExpander::expandNode(Point p1, Point p2)
 void InternalExpander::expand()
 {
 	if (base && owner.visitedStates.size() == 0) {
-		owner.visitedStates.checkAndPush(base->status);
+		owner.visitedStates.checkAndPush(base->status, owner.calculator.calculateStatus(base->status));
 	}
 	auto range = arrayRange(base->status.field);
 	for (auto it1 = range.begin(); it1 != range.end(); ++it1) {
