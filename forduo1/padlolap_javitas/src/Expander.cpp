@@ -13,7 +13,7 @@ public:
 				status(std::move(status)),
 				base(std::move(base)),
 				owner(owner),
-				heur(this->base ? this->base->heur : 
+				heur(this->base ? this->base->heur :
 						owner.calculator.calculateStatus(this->status))
 	{
 	}
@@ -28,6 +28,9 @@ void InternalExpander::expandNode(Point p1, Point p2)
 	std::swap(newStatus.field[p1], newStatus.field[p2]);
 	Node::Ptr node =
 			owner.nodeFactory.createNode(newStatus, MoveDescriptor(p1, p2), base);
+	if (node->heur > heur) {
+		return;
+	}
 	if (!owner.visitedStates.checkAndPush(newStatus, node->heur)) {
 		return;
 	}
