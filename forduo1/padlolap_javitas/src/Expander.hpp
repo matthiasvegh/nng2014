@@ -19,7 +19,7 @@ public:
 		visitedStates(vs), queue(queue),
 		nodeFactory{calculator}
 	{}
-	void expand(std::shared_ptr<Node> base);
+	void expand(const Status& status, std::shared_ptr<Node> base);
 	int getExpandedNodes() const { return expandedNodes; }
 };
 

@@ -1,6 +1,7 @@
 #include "StatusCreator.hpp"
 #include "DumperFunctions.hpp"
 #include "HeurCalculator.hpp"
+#include "Expander.hpp"
 #include <stdexcept>
 
 int main(int argc, char* argv[])
@@ -13,4 +14,14 @@ int main(int argc, char* argv[])
 
 	HeurCalculator heurCalculator;
 	std::cout << "heur = " << heurCalculator.calculateStatus(status) << std::endl;
+
+	VisitedStates visitedStates;
+	PrioNodeQueue queue;
+	Expander expander{visitedStates, queue};
+	expander.expand(status, Node::Ptr{});
+
+	while (queue.size() != 0){
+		auto node = queue.pop();
+		dumpNode(std::cout, *node);
+	}
 }

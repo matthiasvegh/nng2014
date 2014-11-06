@@ -4,10 +4,12 @@
 #include <iostream>
 
 class InternalExpander {
+	Status status;
 	Node::Ptr base;
 	Expander& owner;
 public:
-	InternalExpander(std::shared_ptr<Node> base, Expander &owner):
+	InternalExpander(Status status, std::shared_ptr<Node> base, Expander &owner):
+				status(std::move(status)),
 				base(std::move(base)),
 				owner(owner)
 	{
@@ -19,7 +21,7 @@ public:
 
 void InternalExpander::expandNode(Point p1, Point p2)
 {
-	Status newStatus = base->status;
+	Status newStatus = status;
 	std::swap(newStatus.field[p1], newStatus.field[p2]);
 	Node::Ptr node =
 			owner.nodeFactory.createNode(newStatus, MoveDescriptor(p1, p2), base);
@@ -43,7 +45,7 @@ void InternalExpander::expand()
 	if (base && owner.visitedStates.size() == 0) {
 		owner.visitedStates.checkAndPush(base->status, owner.calculator.calculateStatus(base->status));
 	}
-	auto range = arrayRange(base->status.field);
+	auto range = arrayRange(status.field);
 	for (auto it1 = range.begin(); it1 != range.end(); ++it1) {
 		for (auto it2 = std::next(it1); it2 != range.end(); ++it2)
 		{
@@ -52,9 +54,9 @@ void InternalExpander::expand()
 	}
 }
 
-void Expander::expand(std::shared_ptr<Node> base)
+void Expander::expand(const Status& status, std::shared_ptr<Node> base)
 {
-	InternalExpander exp(std::move(base), *this);
+	InternalExpander exp(status, std::move(base), *this);
 	exp.expand();
 }
 

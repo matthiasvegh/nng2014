@@ -3,7 +3,7 @@
 
 #include "Array.hpp"
 #include "Status.hpp"
-//#include "Node.hpp"
+#include "Node.hpp"
 #include <iostream>
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -42,8 +42,15 @@ void dumpStatus(std::ostream &file, const Status &status,
 	dumpArray(file, status.field, title, indent);
 }
 
-//void dumpNode(std::ostream &file, const Table& table, const Node &node,
-		//std::string title = "", const Array<bool> *highlight = nullptr, int indent = 0);
+void dumpNode(std::ostream &file, const Node &node,
+		std::string title = "", int indent = 0)
+{
+	std::ostringstream ss{title};
+	ss << "{" << node.moveDescriptor.p1 << ", " << node.moveDescriptor.p2 << "}: " <<
+		node.cost << " + " << node.heur << " = " << node.costFgv();
+
+	dumpStatus(file, node.status, ss.str(), indent);
+}
 
 
 
