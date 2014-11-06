@@ -9,10 +9,13 @@ class InternalSolver {
 	VisitedStates visitedStates;
 	PrioNodeQueue queue;
 	Expander expander{visitedStates, queue};
+	Status::ConstPtr status;
 	Node::Ptr currentNode;
 	unsigned iterations = 0;
 public:
-	bool expandSerial(Status& status)
+	InternalSolver(Status::ConstPtr status):status(std::move(status)) {}
+
+	bool expandSerial()
 	{
 		expander.expand(status, currentNode);
 		currentNode = queue.pop();
@@ -23,10 +26,10 @@ public:
 		return true;
 	}
 
-	std::deque<Node::Ptr> solve(Status& status) {
+	std::deque<Node::Ptr> solve() {
 		currentNode.reset();
 		do {
-			if (!expandSerial(status)) {
+			if (!expandSerial()) {
 				break;
 			}
 
@@ -38,7 +41,7 @@ public:
 						"Cost function: %d\n") %
 					iterations % expander.getExpandedNodes() % queue.size() %
 					(currentNode ? currentNode->costFgv() : -1);
-				dumpStatus(std::cerr, status);
+				dumpStatus(std::cerr, *status);
 			}
 		} while (currentNode->heur > 0);
 		std::deque<Node::Ptr> result;
@@ -52,8 +55,8 @@ public:
 
 std::deque<Node::Ptr> Solver::solve(Status status) const
 {
-	InternalSolver solver;
-	return solver.solve(status);
+	InternalSolver solver(std::make_shared<Status>(std::move(status)));
+	return solver.solve();
 
 }
 

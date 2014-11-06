@@ -10,14 +10,14 @@
 struct Node {
 	typedef std::shared_ptr<Node> Ptr;
 
-	Status status;
+	Status::ConstPtr status;
 	MoveDescriptor moveDescriptor;
 	Ptr ancestor;
 	int cost;
 	int heur;
 	int time;
 
-	Node(Status status, const MoveDescriptor& moveDescriptor, Ptr ancestor,
+	Node(Status::ConstPtr status, const MoveDescriptor& moveDescriptor, Ptr ancestor,
 			int c, int heur, int time):
 				status(std::move(status)),
 				moveDescriptor(moveDescriptor),

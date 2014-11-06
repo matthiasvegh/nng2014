@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 	}
 	Status status = loadStatusFromFile(argv[1]);
 	Solver solver;
-	auto result = solver.solve(status);
+	auto result = solver.solve(std::move(status));
 
 	if (result.empty()) {
 		std::cout << "No solution." << std::endl;

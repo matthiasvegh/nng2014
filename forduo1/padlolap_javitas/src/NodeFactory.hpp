@@ -17,13 +17,13 @@ public:
 		calculator(calculator)
 	{}
 	Node::Ptr createNode(
-			const Status & status,
+			const Status::ConstPtr& status,
 			const MoveDescriptor& moveDescriptor,
 			const Node::Ptr& ancestor)
 	{
 		return std::make_shared<Node>(
 				status, moveDescriptor, ancestor, 6,
-				calculator.calculateStatus(status),
+				calculator.calculateStatus(*status),
 				++numNodes);
 	}
 };

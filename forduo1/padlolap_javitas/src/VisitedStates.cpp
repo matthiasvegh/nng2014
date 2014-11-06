@@ -1,7 +1,7 @@
 #include "VisitedStates.hpp"
 #include <boost/foreach.hpp>
 
-bool VisitedStates::checkAndPush(const Status &elem, int heur)
+bool VisitedStates::checkAndPush(const Status::ConstPtr& elem, int heur)
 {
 	auto it = visitedStates.find(elem);
 	if (it == visitedStates.end()) {

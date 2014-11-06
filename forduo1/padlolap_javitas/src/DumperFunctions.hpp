@@ -50,7 +50,7 @@ void dumpNode(std::ostream &file, const Node &node,
 	ss << "{" << node.moveDescriptor.p1 << ", " << node.moveDescriptor.p2 << "}: " <<
 		node.cost << " + " << node.heur << " = " << node.costFgv();
 
-	dumpStatus(file, node.status, ss.str(), indent);
+	dumpStatus(file, *node.status, ss.str(), indent);
 }
 
 

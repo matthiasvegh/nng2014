@@ -2,6 +2,7 @@
 #define STATUS_HPP
 
 #include "Array.hpp"
+#include <memory>
 
 using Value = int;
 struct Status {
@@ -12,6 +13,9 @@ struct Status {
 	Status& operator=(const Status&) = default;
 	Status(Status&&) = default;
 	Status& operator=(Status&&) = default;
+
+	using Ptr = std::shared_ptr<Status>;
+	using ConstPtr = std::shared_ptr<const Status>;
 };
 
 inline

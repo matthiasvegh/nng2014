@@ -20,7 +20,7 @@ public:
 		nodeFactory{calculator}
 	{}
 	~Expander();
-	void expand(const Status& status, std::shared_ptr<Node> base);
+	void expand(const Status::ConstPtr& status, std::shared_ptr<Node> base);
 	int getExpandedNodes() const { return expandedNodes; }
 };
 
