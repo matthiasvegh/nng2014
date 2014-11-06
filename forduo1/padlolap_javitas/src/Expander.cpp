@@ -7,11 +7,14 @@ class InternalExpander {
 	Status status;
 	Node::Ptr base;
 	Expander& owner;
+	int heur;
 public:
 	InternalExpander(Status status, std::shared_ptr<Node> base, Expander &owner):
 				status(std::move(status)),
 				base(std::move(base)),
-				owner(owner)
+				owner(owner),
+				heur(this->base ? this->base->heur : 
+						owner.calculator.calculateStatus(this->status))
 	{
 	}
 
@@ -34,8 +37,8 @@ void InternalExpander::expandNode(Point p1, Point p2)
 
 void InternalExpander::expand()
 {
-	if (base && owner.visitedStates.size() == 0) {
-		owner.visitedStates.checkAndPush(base->status, owner.calculator.calculateStatus(base->status));
+	if (owner.visitedStates.size() == 0) {
+		owner.visitedStates.checkAndPush(status, heur);
 	}
 	auto range = arrayRange(status.field);
 	for (auto it1 = range.begin(); it1 != range.end(); ++it1) {
