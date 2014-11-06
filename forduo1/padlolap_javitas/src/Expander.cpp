@@ -30,7 +30,7 @@ void InternalExpander::expandNode(Point p1, Point p2)
 	}
 	owner.queue.push(node);
 	{
-		if (++owner.expandedNodes % 10000 == 0)
+		if (++owner.expandedNodes % 100000 == 0)
 			std::cerr << boost::format(
 					"Expanded nodes: %d.\n"
 					"Nodes in queue: %d.\n"
