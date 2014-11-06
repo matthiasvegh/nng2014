@@ -2,6 +2,7 @@
 #include "Status.hpp"
 #include "Node.hpp"
 #include "Expander.hpp"
+#include "DumperFunctions.hpp"
 #include <iostream>
 
 class InternalSolver {
@@ -36,7 +37,8 @@ public:
 						"Nodes in queue: %d.\n"
 						"Cost function: %d\n") %
 					iterations % expander.getExpandedNodes() % queue.size() %
-					(currentNode ? currentNode->costFgv() : -1) << std::endl;
+					(currentNode ? currentNode->costFgv() : -1);
+				dumpStatus(std::cerr, status);
 			}
 		} while (currentNode->heur > 0);
 		std::deque<Node::Ptr> result;

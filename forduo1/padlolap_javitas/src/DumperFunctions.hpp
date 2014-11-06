@@ -42,6 +42,7 @@ void dumpStatus(std::ostream &file, const Status &status,
 	dumpArray(file, status.field, title, indent);
 }
 
+inline
 void dumpNode(std::ostream &file, const Node &node,
 		std::string title = "", int indent = 0)
 {
