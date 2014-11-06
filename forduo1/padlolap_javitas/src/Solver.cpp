@@ -29,7 +29,7 @@ public:
 				break;
 			}
 
-			if (++iterations % 10000 == 0) {
+			if (++iterations % 1000 == 0) {
 				std::cerr << boost::format(
 						"Iterations: %d\n"
 						"Expanded nodes: %d.\n"
