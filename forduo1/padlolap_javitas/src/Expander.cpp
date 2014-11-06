@@ -29,15 +29,7 @@ void InternalExpander::expandNode(Point p1, Point p2)
 		return;
 	}
 	owner.queue.push(node);
-	{
-		if (++owner.expandedNodes % 100000 == 0)
-			std::cerr << boost::format(
-					"Expanded nodes: %d.\n"
-					"Nodes in queue: %d.\n"
-					"Cost function: %d\n") %
-				owner.expandedNodes % owner.queue.size() %
-				(node ? node->costFgv() : -1) << std::endl;
-	}
+	++owner.expandedNodes;
 }
 
 void InternalExpander::expand()
