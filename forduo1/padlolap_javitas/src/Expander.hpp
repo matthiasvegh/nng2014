@@ -13,12 +13,13 @@ class Expander {
 	PrioNodeQueue& queue;
 	HeurCalculator calculator;
 	NodeFactory nodeFactory;
-	int expandedNodes;
+	int expandedNodes = 0;
 public:
 	Expander(VisitedStates& vs, PrioNodeQueue& queue):
 		visitedStates(vs), queue(queue),
 		nodeFactory{calculator}
 	{}
+	~Expander();
 	void expand(const Status& status, std::shared_ptr<Node> base);
 	int getExpandedNodes() const { return expandedNodes; }
 };

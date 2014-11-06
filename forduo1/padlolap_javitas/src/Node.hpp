@@ -22,7 +22,7 @@ struct Node {
 				status(std::move(status)),
 				moveDescriptor(moveDescriptor),
 				ancestor(std::move(ancestor)),
-				cost(ancestor ? ancestor->cost + c : c),
+				cost(this->ancestor ? this->ancestor->cost + c : c),
 				heur(heur),
 				time(time)
 	{}

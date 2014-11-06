@@ -60,4 +60,9 @@ void Expander::expand(const Status& status, std::shared_ptr<Node> base)
 	exp.expand();
 }
 
+Expander::~Expander()
+{
+	std::cerr << "Expanded nodes: " << expandedNodes << std::endl;
+}
+
 
