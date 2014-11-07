@@ -4,27 +4,34 @@
 //#include "DumperFunctions.hpp"
 //#include <iostream>
 
-namespace {
+//namespace {
 
-int getNumberOfPartitions(const Status& status)
-{
-	int result = 0;
-	Array<bool> visited(status.field.width(), status.field.height(), false);
+//int getNumberOfPartitions(const Status& status)
+//{
+	//int result = 0;
+	//Array<bool> visited(status.field.width(), status.field.height(), false);
 
-	for (Point p: arrayRange(status.field)) {
-		if (!visited[p]) {
-			floodFill(status, p, visited);
-			++result;
-		}
-	}
-	return result;
-}
+	//for (Point p: arrayRange(status.field)) {
+		//if (!visited[p]) {
+			//floodFill(status, p, visited);
+			//++result;
+		//}
+	//}
+	//return result;
+//}
 
-}
+//}
 
 int HeurCalculator::calculateStatus(const Status& status)
 {
-	return getNumberOfPartitions(status) - 3;
+	int result = 0;
+	for (Point p: arrayRange(status.field)) {
+		if (arrayAt(targetStatus.field, p, -1) != status.field[p]) {
+			++result;
+		}
+	}
+
+	return result;
 }
 
 

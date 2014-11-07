@@ -15,4 +15,6 @@ out
 .ycm_extra_conf.py*
 .tup
 build-*
+*.out
+*.target
 /custom

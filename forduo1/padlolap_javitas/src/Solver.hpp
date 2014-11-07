@@ -9,7 +9,7 @@ class Node;
 
 class Solver {
 public:
-	std::deque<std::shared_ptr<Node>> solve(Status status) const;
+	std::deque<std::shared_ptr<Node>> solve(Status status, Status targetStatus) const;
 };
 
 #endif /* SOLVER_H */

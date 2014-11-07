@@ -1,6 +1,6 @@
 #include "Node.hpp"
 
-bool Node::greedy = false;
+bool Node::greedy = true;
 
 
 

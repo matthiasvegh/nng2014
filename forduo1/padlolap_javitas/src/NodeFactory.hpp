@@ -22,7 +22,7 @@ public:
 			const Node::Ptr& ancestor)
 	{
 		return std::make_shared<Node>(
-				status, moveDescriptor, ancestor, 6,
+				status, moveDescriptor, ancestor, 2,
 				calculator.calculateStatus(*status),
 				++numNodes);
 	}

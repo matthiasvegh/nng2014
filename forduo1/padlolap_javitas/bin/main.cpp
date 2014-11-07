@@ -7,12 +7,13 @@
 
 int main(int argc, char* argv[])
 {
-	if (argc != 2) {
+	if (argc != 3) {
 		throw std::logic_error{"Bad parameter"};
 	}
 	Status status = loadStatusFromFile(argv[1]);
+	Status targetStatus = loadStatusFromFile(argv[2]);
 	Solver solver;
-	auto result = solver.solve(std::move(status));
+	auto result = solver.solve(std::move(status), std::move(targetStatus));
 
 	if (result.empty()) {
 		std::cout << "No solution." << std::endl;

@@ -8,12 +8,15 @@
 class InternalSolver {
 	VisitedStates visitedStates;
 	PrioNodeQueue queue;
-	Expander expander{visitedStates, queue};
+	Expander expander;
 	Status::ConstPtr status;
 	Node::Ptr currentNode;
 	unsigned iterations = 0;
 public:
-	InternalSolver(Status::ConstPtr status):status(std::move(status)) {}
+	InternalSolver(Status::ConstPtr status, Status targetStatus):
+		expander{visitedStates, queue, std::move(targetStatus)},
+		status(std::move(status))
+	{}
 
 	bool expandSerial()
 	{
@@ -33,7 +36,7 @@ public:
 				break;
 			}
 
-			if (++iterations % 1000 == 0) {
+			if (++iterations % 10000 == 0) {
 				std::cerr << boost::format(
 						"Iterations: %d\n"
 						"Expanded nodes: %d.\n"
@@ -53,9 +56,10 @@ public:
 
 };
 
-std::deque<Node::Ptr> Solver::solve(Status status) const
+std::deque<Node::Ptr> Solver::solve(Status status, Status targetStatus) const
 {
-	InternalSolver solver(std::make_shared<Status>(std::move(status)));
+	InternalSolver solver(std::make_shared<Status>(std::move(status)),
+				std::move(targetStatus));
 	return solver.solve();
 
 }
