@@ -24,6 +24,9 @@ public:
 
 void InternalExpander::expandNode(Point p1, Point p2)
 {
+	if (status->field[p1] == status->field[p2]) {
+		return;
+	}
 	auto newStatus = std::make_shared<Status>(*status);
 	std::swap(newStatus->field[p1], newStatus->field[p2]);
 	Node::Ptr node =
