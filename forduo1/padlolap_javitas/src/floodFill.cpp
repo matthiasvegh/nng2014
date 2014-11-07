@@ -1,7 +1,7 @@
 #include "floodFill.hpp"
 #include <vector>
 
-void floodFill(const Status& status, Point p0, Array<bool>& result)
+void floodFill(const Status& status, Point p0, Array<bool>& result, int* size)
 {
 	std::vector<Point> pointsToVisit;
 	pointsToVisit.reserve(status.field.width()*status.field.height());
@@ -15,6 +15,9 @@ void floodFill(const Status& status, Point p0, Array<bool>& result)
 		if (!arrayAt(result, p, true)) {
 
 			if (getValue(status, p) == value) {
+				if (size) {
+					++*size;
+				}
 				result[p] = true;
 				pointsToVisit.push_back(p+Point::p10);
 				pointsToVisit.push_back(p+Point::pm10);
