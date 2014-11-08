@@ -36,7 +36,7 @@ void InternalExpander::expandNode(Point p1, Point p2)
 	if (node->heur > heur) {
 		return;
 	}
-	if (!owner.visitedStates.checkAndPush(newStatus, node->heur)) {
+	if (!owner.visitedStates.checkAndPush(newStatus, node->costFgv())) {
 		return;
 	}
 	owner.queue.push(node);
