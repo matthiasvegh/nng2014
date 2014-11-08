@@ -3,6 +3,6 @@
 
 #include "Status.hpp"
 
-Status findTargetStatus(const Status& status);
+Status findTargetStatus(const Status& status, unsigned seed);
 
 #endif /* SRC_TARGETSTATUS_HPP */
