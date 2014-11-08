@@ -5,9 +5,12 @@
 #include <iostream>
 #include <string.h> /* strcat */
 #include <boost/optional.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
-using Num = std::int64_t;
-using Rep = Num;
+using namespace boost::multiprecision::literals;
+namespace mp = boost::multiprecision;
+using Num = mp::uint512_t;
+using Rep = std::uint64_t;
 using Opt = boost::optional<Num>;
 
 // 1 -> +   0 -> *
@@ -23,7 +26,6 @@ const char* byte_to_binary(Num x, std::size_t size) {
 	return b;
 }
 
-
 Opt calculate(Rep state, std::list<Num> v /*copy*/) {
 	assert(v.size() > 1);
 	Num result = 0;
@@ -35,12 +37,14 @@ Opt calculate(Rep state, std::list<Num> v /*copy*/) {
 		} else { // *
 			auto itTmp = it;
 			Num subResult = *it * *(++itTmp);
-			//if (subResult >  TODO return immediately
+			// if (subResult >  TODO return immediately
 			*it = subResult;
 			v.erase(itTmp);
 		}
 	}
-	for (auto value : v) { result += value; }
+	for (auto value : v) {
+		result += value;
+	}
 	return result;
 }
 
@@ -55,32 +59,38 @@ void f(const std::vector<Num>& v, Num result) {
 	}
 }
 
+Num numAtoi(const char* const str) {
+	Num res = 0; // Initialize result
+	for (int i = 0; str[i] != '\0'; ++i) res = res * 10 + str[i] - '0';
+	return res;
+}
+
 void test_calc_1() {
-	auto c = calculate(0b1, {1,1});
+	auto c = calculate(0b1, {1, 1});
 	assert(*c == 2);
 }
 void test_calc_2() {
-	auto c = calculate(0b0, {1,1});
+	auto c = calculate(0b0, {1, 1});
 	assert(*c == 1);
 }
 void test_calc_3() {
-	auto c = calculate(0b10, {1,2,3});
+	auto c = calculate(0b10, {1, 2, 3});
 	assert(*c == 7);
 }
 void test_calc_4() {
-	auto c = calculate(0b01, {1,2,3});
+	auto c = calculate(0b01, {1, 2, 3});
 	assert(*c == 5);
 }
 void test_calc_5() {
-	auto c = calculate(0b11, {1,2,3});
+	auto c = calculate(0b11, {1, 2, 3});
 	assert(*c == 6);
 }
 void test_calc_6() {
-	auto c = calculate(0b10101, {1,2,3,4,5,1});
+	auto c = calculate(0b10101, {1, 2, 3, 4, 5, 1});
 	assert(*c == 28);
 }
 void test_calc_7() {
-	auto c = calculate(0b1010, {1,2,3,4,5});
+	auto c = calculate(0b1010, {1, 2, 3, 4, 5});
 	assert(*c == 27);
 }
 
@@ -93,7 +103,10 @@ int main() {
 	test_calc_4();
 	test_calc_6();
 	test_calc_7();
-	f({2456,5488,3762,6079,6295,748,230}, 51921635);
+	f({2456, 5488, 3762, 6079, 6295, 748, 230}, 51921635);
+	f({4816, 6427, 1591, 6385, 8694, 5280, 7439, 6747, 733, 7607, 5952, 3082,
+	   407, 8669, 4780, 7217, 8801, 7170, 9219, 4010, 8029, 4502},
+	  numAtoi("2279758461274168336368658723528310"));
 
 	return 0;
 }
