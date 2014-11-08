@@ -25,9 +25,14 @@ int main(int argc, char* argv[])
 		std::cout << "No solution." << std::endl;
 	} else {
 		int time = 0;
+		Channel* previousChannel = nullptr;
 
 		for (const auto& node: result) {
-			std::cout << time << " " << node->status->program->channel->name << std::endl;
+			auto channel = node->status->program->channel;
+			if (channel != previousChannel && !channel->name.empty()) {
+				std::cout << time << " " << channel->name << std::endl;
+				previousChannel = channel;
+			}
 			time = node->status->program->endTime;
 		}
 
