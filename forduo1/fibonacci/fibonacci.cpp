@@ -22,8 +22,8 @@ Node* addNode(Node* nodeMinus1, Node* nodeMinus2) {
 	newNode->nMinus2 = nodeMinus2;
 	newNode->size = newNode->nMinus1->size + newNode->nMinus2->size;
 	newNode->start = newNode->nMinus1->start + newNode->nMinus1->size;
-	//std::cerr << "pos: " << newNode->start << std::endl;
-	//std::cerr << "size: " << newNode->size << std::endl;
+	std::cerr << "pos: " << newNode->start << std::endl;
+	std::cerr << "size: " << newNode->size << std::endl;
 	return newNode;
 }
 
@@ -31,25 +31,22 @@ struct Result {
 	Node* node;
 };
 Result getNode(const std::string& str1, const std::string& str2,
-						 std::size_t position) {
+			   std::size_t position) {
 	Node* node1 = new Node;
 	Node* node2 = new Node;
 	node1->value = str1;
 	node1->size = node1->value->size();
 	node1->start = 0;
-	//std::cerr << "pos: " << node1->start << std::endl;
-	//std::cerr << "size: " << node1->size << std::endl;
-	if (node1->start + node1->size > position)
-		return {node1};
+	std::cerr << "pos: " << node1->start << std::endl;
+	std::cerr << "size: " << node1->size << std::endl;
+	if (node1->start + node1->size > position) return {node1};
 
 	node2->value = str2;
 	node2->size = node2->value->size();
 	node2->start = node1->start + node1->size;
-	//std::cerr << "pos: " << node2->start << std::endl;
-	//std::cerr << "size: " << node2->size << std::endl;
-	if (node2->start + node2->size > position)
-		return {node2};
-
+	std::cerr << "pos: " << node2->start << std::endl;
+	std::cerr << "size: " << node2->size << std::endl;
+	if (node2->start + node2->size > position) return {node2};
 
 	Node* nodeMinus1 = node2;
 	Node* nodeMinus2 = node1;
@@ -68,7 +65,7 @@ struct CharResult {
 	std::size_t index;
 };
 CharResult findNth(Node* startNode, std::size_t index) {
-	if(startNode->nMinus1 == nullptr) {
+	if (startNode->nMinus1 == nullptr) {
 		return CharResult{startNode->value.get(), index};
 	}
 	if (index < startNode->nMinus2->size) {
@@ -148,13 +145,25 @@ int main() {
 	testB();
 	testC();
 	testD();
-	//test0();
+	// test0();
 	test1();
 	test2();
 	test3();
 	test4();
 
-	auto r = fibonacci("nagy", "arpi", 54);
-	std::cout << "nagy" << "arpi:" << 54 << " " << r.str[r.index] << std::endl;
-	std::cout << r.str << " " << r.index << std::endl;
+	{
+		auto r = fibonacci("nagy", "arpi", 54);
+		std::cout << r.str[r.index] << std::endl;
+		std::cout << r.str << " " << r.index << std::endl;
+	}
+	{
+		auto r = fibonacci("arvizturo", "tukorfurogep", 2800000000);
+		std::cout << r.str[r.index] << std::endl;
+		std::cout << r.str << " " << r.index << std::endl;
+	}
+	{
+		auto r = fibonacci("bug", "feature", 99999999999);
+		std::cout << r.str[r.index] << std::endl;
+		std::cout << r.str << " " << r.index << std::endl;
+	}
 }
