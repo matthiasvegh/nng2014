@@ -50,6 +50,28 @@ ProgramGraph loadFromFile(const char* filename)
 		}
 	}
 
+	result.dummyChannel.reset(new Channel);
+	result.beginProgram.reset(new Program);
+	result.endProgram.reset(new Program);
+
+	result.beginProgram->channel = result.dummyChannel.get();
+	result.beginProgram->startTime = 0;
+	result.beginProgram->endTime = 0;
+	result.endProgram->channel = result.dummyChannel.get();
+
+	int maxTime = 0;
+	for (auto program: result.programs) {
+		result.beginProgram->next.emplace_back(program, program->startTime);
+		maxTime = std::max(maxTime, program->endTime);
+	}
+
+	result.endProgram->startTime = maxTime;
+	result.endProgram->endTime = maxTime;
+
+	for (auto program: result.programs) {
+		program->next.emplace_back(result.endProgram.get(), maxTime - program->endTime);
+	}
+
 	return result;
 }
 

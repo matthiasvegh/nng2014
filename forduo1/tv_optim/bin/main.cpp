@@ -1,4 +1,7 @@
 #include "ProgramGraph.hpp"
+#include "Solver.hpp"
+#include "Status.hpp"
+#include "Node.hpp"
 #include <iostream>
 #include <stdexcept>
 
@@ -10,14 +13,23 @@ int main(int argc, char* argv[])
 
 	auto programGraph = loadFromFile(argv[1]);
 
-	std::cout << "digraph tv {\n";
-	for (auto program1: programGraph.programs) {
-		for (const auto& edge: program1->next) {
-			auto program2 = edge.program;
-			std::cout << "  " << program1->channel->name << program1->startTime << " -> " <<
-				program2->channel->name << program2->startTime <<
-				" [label=\"" << edge.distance << "\"]\n";
+	Status status;
+	status.program = programGraph.beginProgram.get();
+	Status targetStatus;
+	targetStatus.program = programGraph.endProgram.get();
+
+	Solver solver;
+	auto result = solver.solve(std::move(status), std::move(targetStatus));
+
+	if (result.empty()) {
+		std::cout << "No solution." << std::endl;
+	} else {
+		int time = 0;
+
+		for (const auto& node: result) {
+			std::cout << time << " " << node->status->program->channel->name << std::endl;
+			time = node->status->program->endTime;
 		}
+
 	}
-	std::cout << "}" << std::endl;
 }
