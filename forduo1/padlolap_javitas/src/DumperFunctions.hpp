@@ -4,6 +4,7 @@
 #include "Array.hpp"
 #include "Status.hpp"
 #include "Node.hpp"
+#include "SimpleNode.hpp"
 #include <iostream>
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -51,6 +52,16 @@ void dumpNode(std::ostream &file, const Node &node,
 		node.cost << " + " << node.heur << " = " << node.costFgv();
 
 	dumpStatus(file, *node.status, ss.str(), indent);
+}
+
+inline
+void dumpSimpleNode(std::ostream &file, const SimpleNode &node,
+		std::string title = "", int indent = 0)
+{
+	std::ostringstream ss{title};
+	ss << "{" << node.moveDescriptor.p1 << ", " << node.moveDescriptor.p2 << "}";
+
+	dumpStatus(file, node.status, ss.str(), indent);
 }
 
 
