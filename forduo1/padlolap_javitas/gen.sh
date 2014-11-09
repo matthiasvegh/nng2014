@@ -7,12 +7,12 @@ else
 fi
 
 for ((i=0; i<1000; ++i)); do
-	name=tiles2_gen_$i
+	name=tiles3_gen_$i
 	echo $name >&2
 	targetName=${name}.target
 	outputName=${name}.out
-	if ./build-clang_release/bin/findTarget tiles2.txt $((seed + i)) >$targetName; then
-		./build-clang_release/bin/padlolap tiles2.txt $targetName >$outputName
+	if ./build-clang_release/bin/findTarget tiles3.txt $((seed + i)) >$targetName; then
+		./build-clang_release/bin/padlolap tiles3.txt $targetName >$outputName
 	fi
 done
 
