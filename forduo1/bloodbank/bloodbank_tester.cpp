@@ -7,6 +7,8 @@ void runtests(BloodBank& bank)
 {
 	Batch* first= bank.createBatch();
 
+	std::size_t numberOfPasses = 0;
+
 	const size_t stride = 2;
 	std::vector<size_t> indices;
 	indices.reserve(bank.getNumberOfSamples());
@@ -47,8 +49,13 @@ void runtests(BloodBank& bank)
 			for(std::vector<size_t>::iterator s= samples.begin(); s != samples.end(); ++s)
 			{
 				bank.markSafe(*s);
+				++numberOfPasses;
 			}
 		}
+	}
+
+	if (double(numberOfPasses) >= double(0.8 * indices.size())) {
+		return;
 	}
 	bank.evaluateBatch(second);
 
@@ -59,6 +66,7 @@ void runtests(BloodBank& bank)
 			// Negative test, keep
 			second->getSamples(i, samples);
 			bank.markSafe(samples[0]);
+			++numberOfPasses;
 		}
 	}
 }
