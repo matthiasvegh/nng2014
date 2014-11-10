@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#include <iostream>
+#include <ctime>
 #include "bloodbank_api.h"
 
 template<typename UnaryFunction>
@@ -70,8 +70,8 @@ bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
 void runtests(BloodBank& bank)
 {
 
-	const std::size_t stride1 = 9;
-	const std::size_t stride2 = 3;
+	const std::size_t stride1 = 10;
+	const std::size_t stride2 = 2;
 	const std::size_t stride3 = 1;
 
 	std::vector<size_t> indices;
@@ -80,6 +80,10 @@ void runtests(BloodBank& bank)
 		indices.push_back(i);
 	}
 
+	std::srand(std::time(0));
+
+	std::random_shuffle(indices.begin(), indices.end());
+
 	const std::size_t totalSamples = bank.getNumberOfSamples();
 	HealthyRegister reg(bank);
 
@@ -87,11 +91,13 @@ void runtests(BloodBank& bank)
 		runRound(bank, indices, stride1, reg);
 
 	HANDLEROUND(reg, totalSamples);
+	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
 
 	std::vector<std::size_t> failedSecondRound =
 		runRound(bank, failedFirstRound, stride2, reg);
 
 	HANDLEROUND(reg, totalSamples);
+	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
 
 	std::vector<std::size_t> failedThirdRound =
 		runRound(bank, failedSecondRound, stride3, reg);
