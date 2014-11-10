@@ -21,25 +21,34 @@ std::string byte_to_binary(Num x, std::size_t size) {
 	return result;
 }
 
-Num calculate(Rep state, const std::vector<Num>& v, const Num& expected) {
+struct Status {
 	Num result = 0;
 	Num subResult = 1;
-	for (int i = 0; i < v.size() - 1; ++i) {
-		//std::cerr << v[i];
-		subResult *= v[i];
+	int i = 0;
+};
 
-		if (! (state & (1 << i))) {
+void calculate(Rep state, const std::vector<Num>& v, Status& status, int max) {
+	for (; status.i < max; ++status.i) {
+		//std::cerr << v[i];
+		status.subResult *= v[status.i];
+
+		if (! (state & (1 << status.i))) {
 			// +
 			//std::cerr << "+";
-			result += subResult;
-			subResult = 1;
+			status.result += status.subResult;
+			status.subResult = 1;
 		} else {
 			//std::cerr << "*";
 		}
 	}
-	result += subResult * v.back();
+}
+
+Num calculateFinish(Rep state, const std::vector<Num>& v, Status status)
+{
+	calculate(state, v, status, v.size() - 1);
+	status.result += status.subResult * v.back();
 	//std::cerr << v.back() << "=" << result << "\n";
-	return result;
+	return status.result;
 }
 
 struct F {
@@ -54,26 +63,24 @@ struct F {
 			v(v), result(result)
 	{}
 
-	bool solve(Rep node, int firstBit, const std::string& indent) {
+	bool solve(Rep node, int firstBit, Status status) {
 		if (solved % hundredth == 0) {
 			std::cerr << solved / hundredth << "%\r";
 		}
 
-		//std::cerr << indent << "-> " << byte_to_binary(node, v.size()) << '\n';
-		auto r = calculate(node, v, result);
-		//std::cerr << "-> " << byte_to_binary(node, v.size()) << "=" << r << '\n';
+		calculate(node, v, status, firstBit);
+		auto r = calculateFinish(node, v, status);
 		if (r == result) {
 			std::cout << byte_to_binary(node, v.size()) << '\n';
 			return true;
 		} else if (r > result) {
-			//std::cerr << indent << "-> cut\n";
 			solved += std::pow(2, numberOfBits - firstBit);
 			return false;
 		} else {
 			++solved;
 
 			for (int bit = firstBit; bit < numberOfBits; ++bit) {
-				if (solve(node | (1 << bit), bit + 1, indent + ' ')) {
+				if (solve(node | (1 << bit), bit + 1, status)) {
 					return true;
 				}
 			}
@@ -84,7 +91,7 @@ struct F {
 	}
 
 	void operator()() {
-		solve(0, 0, "");
+		solve(0, 0, Status{});
 	}
 };
 
@@ -95,31 +102,31 @@ Num numAtoi(const char* const str) {
 }
 
 void test_calc_1() {
-	auto c = calculate(0b0, {1, 1}, 2);
+	auto c = calculateFinish(0b0, {1, 1}, Status{});
 	assert(c == 2);
 }
 void test_calc_2() {
-	auto c = calculate(0b1, {1, 1}, 2);
+	auto c = calculateFinish(0b1, {1, 1}, Status{});
 	assert(c == 1);
 }
 void test_calc_3() {
-	auto c = calculate(0b10, {1, 2, 3}, 100);
+	auto c = calculateFinish(0b10, {1, 2, 3}, Status{});
 	assert(c == 7);
 }
 void test_calc_4() {
-	auto c = calculate(0b01, {1, 2, 3}, 100);
+	auto c = calculateFinish(0b01, {1, 2, 3}, Status{});
 	assert(c == 5);
 }
 void test_calc_5() {
-	auto c = calculate(0b00, {1, 2, 3}, 100);
+	auto c = calculateFinish(0b00, {1, 2, 3}, Status{});
 	assert(c == 6);
 }
 void test_calc_6() {
-	auto c = calculate(0b01010, {1, 2, 3, 4, 5, 1}, 100);
+	auto c = calculateFinish(0b01010, {1, 2, 3, 4, 5, 1}, Status{});
 	assert(c == 28);
 }
 void test_calc_7() {
-	auto c = calculate(0b1010, {1, 2, 3, 4, 5}, 100);
+	auto c = calculateFinish(0b1010, {1, 2, 3, 4, 5}, Status{});
 	assert(c == 27);
 }
 
