@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#include <iostream>
+#include <ctime>
 #include "bloodbank_api.h"
 
 template<typename UnaryFunction>
@@ -79,6 +79,10 @@ void runtests(BloodBank& bank)
 	for(size_t i = 0; i< bank.getNumberOfSamples(); ++i) {
 		indices.push_back(i);
 	}
+
+	std::srand(std::time(0));
+
+	std::random_shuffle(indices.begin(), indices.end());
 
 	const std::size_t totalSamples = bank.getNumberOfSamples();
 	HealthyRegister reg(bank);
