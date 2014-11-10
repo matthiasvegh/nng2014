@@ -54,7 +54,9 @@ Opt calculate(Rep state, std::list<Num> v /*copy*/, Num expected) {
 }
 
 void f(const std::vector<Num>& v, Num result) {
-	for (Rep i = 0; i < std::pow(2, v.size() - 1); ++i) {
+	Rep size = std::pow(2, v.size() - 1);
+	Rep hundredth = size / 100;
+	for (Rep i = 0; i < size; ++i) {
 		auto r = calculate(i, {v.begin(), v.end()}, result);
 		if (r) {
 			//std::cout << *r << '\n';
@@ -62,6 +64,10 @@ void f(const std::vector<Num>& v, Num result) {
 				std::cout << byte_to_binary(i, v.size()) << '\n';
 				break;
 			}
+		}
+
+		if (i % hundredth == 0) {
+			std::cerr << i / 100 << "%\r";
 		}
 	}
 }
