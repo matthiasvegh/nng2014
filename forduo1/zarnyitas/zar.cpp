@@ -60,7 +60,7 @@ struct F {
 		}
 
 		//std::cerr << indent << "-> " << byte_to_binary(node, v.size()) << '\n';
-		auto r = calculate(node, {v.begin(), v.end()}, result);
+		auto r = calculate(node, v, result);
 		//std::cerr << "-> " << byte_to_binary(node, v.size()) << "=" << r << '\n';
 		if (r == result) {
 			std::cout << byte_to_binary(node, v.size()) << '\n';
