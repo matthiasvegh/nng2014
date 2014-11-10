@@ -19,3 +19,10 @@ Identified safe: 8959 / 9906
 Discarded  safe: 0 / 9906
 Discarded   bad: 947 / 9906
 Discarded total: 947 / 9906
+hundredthousand
+Test count: 68970
+Batch count: 2
+Identified safe: 90000 / 100000
+Discarded  safe: 0 / 100000
+Discarded   bad: 10000 / 100000
+Discarded total: 10000 / 100000
