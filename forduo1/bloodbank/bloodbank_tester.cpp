@@ -3,7 +3,8 @@
 #include <iostream>
 #include "bloodbank_api.h"
 
-std::vector<std::size_t> runRound(BloodBank& bank, std::vector<size_t> indices, std::size_t stride) {
+template<typename UnaryFunction>
+std::vector<std::size_t> runRound(BloodBank& bank, std::vector<size_t> indices, std::size_t stride, UnaryFunction& f) {
 	Batch* batch = bank.createBatch();
 
 	std::size_t i;
@@ -31,18 +32,40 @@ std::vector<std::size_t> runRound(BloodBank& bank, std::vector<size_t> indices, 
 
 		bool healthy = !batch->getTestResult(test);
 
-		for(std::vector<size_t>::iterator it=samples.begin(); it!=samples.end(); ++it) {
-			if(healthy) {
-				bank.markSafe(*it);
+		if(healthy) {
+			for(std::vector<size_t>::iterator it=samples.begin(); it!=samples.end(); ++it) {
+				f(*it);
+			}
+		} else {
+			if(samples.size() <= 1) {
+				; // sample is unhealthy, ignore
 			} else {
-				// TODO: what if it was alone, then it is certainly bad
-				unknownValues.push_back(*it);
+				std::copy(samples.begin(), samples.end(), std::back_inserter(unknownValues));
 			}
 		}
 
 	}
 	return unknownValues;
 }
+
+struct HealthyRegister {
+	BloodBank& bank;
+	std::size_t numberPassed;
+	HealthyRegister(BloodBank& bank): bank(bank), numberPassed(0) { }
+	void operator()(std::size_t sample) {
+		bank.markSafe(sample);
+		++numberPassed;
+	}
+};
+
+bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
+	return float(numberPassed) < 0.8f * float(numberOfSamples);
+}
+
+#define HANDLEROUND(h, s) \
+	if(not doWeContinue((h).numberPassed, (s))) { \
+		return; \
+	}\
 
 void runtests(BloodBank& bank)
 {
@@ -57,13 +80,20 @@ void runtests(BloodBank& bank)
 		indices.push_back(i);
 	}
 
+	const std::size_t totalSamples = bank.getNumberOfSamples();
+	HealthyRegister reg(bank);
+
 	std::vector<std::size_t> failedFirstRound =
-		runRound(bank, indices, stride1);
+		runRound(bank, indices, stride1, reg);
+
+	HANDLEROUND(reg, totalSamples);
 
 	std::vector<std::size_t> failedSecondRound =
-		runRound(bank, failedFirstRound, stride2);
+		runRound(bank, failedFirstRound, stride2, reg);
+
+	HANDLEROUND(reg, totalSamples);
 
 	std::vector<std::size_t> failedThirdRound =
-		runRound(bank, failedSecondRound, stride3);
+		runRound(bank, failedSecondRound, stride3, reg);
 
 }
