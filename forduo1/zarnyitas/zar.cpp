@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string.h> /* strcat */
 #include <boost/multiprecision/cpp_int.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 using namespace boost::multiprecision::literals;
 namespace mp = boost::multiprecision;
@@ -71,6 +72,7 @@ struct F {
 
 		//std::cerr << indent << "-> " << byte_to_binary(node, v.size()) << '\n';
 		auto r = calculate(~node, {v.begin(), v.end()}, result);
+		//std::cerr << "-> " << byte_to_binary(node, v.size()) << "=" << r << '\n';
 		if (r == result) {
 			std::cout << byte_to_binary(node, v.size()) << '\n';
 			return true;
@@ -148,10 +150,17 @@ int main(int argc, char* argv[]) {
 	while (file.good()) {
 		std::string s;
 		file >> s;
-		values.push_back(numAtoi(s.c_str()));
+		boost::algorithm::trim(s);
+		if (!s.empty()) {
+			values.push_back(numAtoi(s.c_str()));
+		}
 	}
 	Num result = values.back();
 	values.pop_back();
+	for (const auto& v: values) {
+		std::cerr << v << " ";
+	}
+	std::cerr << "\n" << result << std::endl;
 	F{values, result}();
 
 	return 0;
