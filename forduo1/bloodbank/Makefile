@@ -15,7 +15,7 @@ run: bloodbank_tester blood_001.txt blood_002.txt blood_003.txt hundredthousand
 	@echo 'hundredthousand' >> .runresults
 	./bloodbank_tester hundredthousand >> .runresults
 
-	git diff --no-index --minimal --color ./baseline_results ./.runresults | cat
+	@git diff --word-diff --no-index --minimal --color ./baseline_results ./.runresults | cat
 
 test_creator: testcreator.cpp
 	g++ -O3 --std=c++11 testcreator.cpp -o testcreator
