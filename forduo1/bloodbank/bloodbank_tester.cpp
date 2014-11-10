@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <iostream>
 #include "bloodbank_api.h"
 
 struct StatisticsRecorder {
@@ -17,12 +18,13 @@ struct StatisticsRecorder {
 
 };
 
-template<typename UnaryFunction>
+template<typename HealthyHandler, typename UnhealthyHandler>
 std::vector<std::size_t> runRound(
 		BloodBank& bank,
 		std::vector<size_t> indices,
 		std::size_t stride,
-		UnaryFunction& f,
+		HealthyHandler& h,
+		UnhealthyHandler& uh,
 		StatisticsRecorder& recorder)
 {
 	Batch* batch = bank.createBatch();
@@ -55,12 +57,12 @@ std::vector<std::size_t> runRound(
 		if(healthy) {
 			for(std::vector<size_t>::iterator it=samples.begin(); it!=samples.end(); ++it) {
 				recorder.registerHealthy(*it);
-				f(*it);
+				h(*it);
 			}
 		} else {
 			recorder.registerFail(samples);
-			if(samples.size() <= 1) {
-				; // sample is unhealthy, ignore
+			if(samples.size() == 1) {
+				uh(samples[0]);
 			} else {
 				std::copy(samples.begin(), samples.end(), std::back_inserter(unknownValues));
 			}
@@ -69,6 +71,14 @@ std::vector<std::size_t> runRound(
 	}
 	return unknownValues;
 }
+
+struct UnhealthyRegister {
+	std::size_t numberFailed;
+	UnhealthyRegister():numberFailed(0) { }
+	void operator()(std::size_t) {
+		++numberFailed;
+	}
+};
 
 struct HealthyRegister {
 	BloodBank& bank;
@@ -89,6 +99,7 @@ bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
 		return; \
 	}\
 
+
 void runtests(BloodBank& bank)
 {
 
@@ -108,21 +119,22 @@ void runtests(BloodBank& bank)
 
 	const std::size_t totalSamples = bank.getNumberOfSamples();
 	HealthyRegister reg(bank);
+	UnhealthyRegister ureg;
 	StatisticsRecorder rec;
 
 	std::vector<std::size_t> failedFirstRound =
-		runRound(bank, indices, stride1, reg, rec);
+		runRound(bank, indices, stride1, reg, ureg, rec);
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
 
 	std::vector<std::size_t> failedSecondRound =
-		runRound(bank, failedFirstRound, stride2, reg, rec);
+		runRound(bank, failedFirstRound, stride2, reg, ureg, rec);
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
 
 	std::vector<std::size_t> failedThirdRound =
-		runRound(bank, failedSecondRound, stride3, reg, rec);
+		runRound(bank, failedSecondRound, stride3, reg, ureg, rec);
 
 }
