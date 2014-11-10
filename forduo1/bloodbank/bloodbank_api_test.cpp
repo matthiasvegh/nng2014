@@ -136,7 +136,7 @@ void BloodBankImp::markSafe( size_t sampleID )
 void BloodBankImp::evaluateBatch( Batch* batch )
 {
 	++mBatchCount;
-	assert(mBatchCount < MAX_BATCH_COUNT);
+	assert(mBatchCount <= MAX_BATCH_COUNT);
 	BatchImp& btch= *static_cast<BatchImp*>(batch);
 	for(BatchImp::tests_t::iterator t= btch.mTests.begin(); t != btch.mTests.end(); ++t)
 	{
