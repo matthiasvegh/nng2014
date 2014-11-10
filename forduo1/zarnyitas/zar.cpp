@@ -4,7 +4,6 @@
 #include <list>
 #include <iostream>
 #include <fstream>
-#include <string.h> /* strcat */
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -14,42 +13,32 @@ using Num = mp::uint512_t;
 using Rep = std::uint64_t;
 
 // 0 -> +   1 -> *
-const char* byte_to_binary(Num x, std::size_t size) {
-	static char b[65];
-	b[0] = '\0';
-
-	std::int64_t z;
-	for (z = std::pow(2, size - 2); z > 0; z >>= 1) {
-		strcat(b, ((x & z) == z) ? "*" : "+");
+std::string byte_to_binary(Num x, std::size_t size) {
+	std::string result;
+	for (int i = 0; i < size - 1; ++i) {
+		result += (x & (1 << i)) ? '*' : '+';
 	}
-
-	return b;
+	return result;
 }
 
-Num calculate(Rep state, std::list<Num> v /*copy*/, Num expected) {
-	assert(v.size() > 1);
+Num calculate(Rep state, const std::vector<Num>& v, const Num& expected) {
 	Num result = 0;
-	auto it = v.begin();
-	for (Rep z = std::pow(2, v.size() - 2); z > 0; z >>= 1) {
-		if ((state & z) == z) { // nth bit set
-			// result +
-			++it;
-		} else { // *
-			auto itTmp = it;
-			Num subResult = *it * *(++itTmp);
-			if (subResult > expected) {
-				return subResult;
-			}
-			*it = subResult;
-			v.erase(itTmp);
+	Num subResult = 1;
+	for (int i = 0; i < v.size() - 1; ++i) {
+		//std::cerr << v[i];
+		subResult *= v[i];
+
+		if (! (state & (1 << i))) {
+			// +
+			//std::cerr << "+";
+			result += subResult;
+			subResult = 1;
+		} else {
+			//std::cerr << "*";
 		}
 	}
-	for (auto value : v) {
-		result += value;
-		if (result > expected) {
-			return result;
-		}
-	}
+	result += subResult * v.back();
+	//std::cerr << v.back() << "=" << result << "\n";
 	return result;
 }
 
@@ -71,7 +60,7 @@ struct F {
 		}
 
 		//std::cerr << indent << "-> " << byte_to_binary(node, v.size()) << '\n';
-		auto r = calculate(~node, {v.begin(), v.end()}, result);
+		auto r = calculate(node, {v.begin(), v.end()}, result);
 		//std::cerr << "-> " << byte_to_binary(node, v.size()) << "=" << r << '\n';
 		if (r == result) {
 			std::cout << byte_to_binary(node, v.size()) << '\n';
@@ -106,11 +95,11 @@ Num numAtoi(const char* const str) {
 }
 
 void test_calc_1() {
-	auto c = calculate(0b1, {1, 1}, 2);
+	auto c = calculate(0b0, {1, 1}, 2);
 	assert(c == 2);
 }
 void test_calc_2() {
-	auto c = calculate(0b0, {1, 1}, 2);
+	auto c = calculate(0b1, {1, 1}, 2);
 	assert(c == 1);
 }
 void test_calc_3() {
@@ -122,11 +111,11 @@ void test_calc_4() {
 	assert(c == 5);
 }
 void test_calc_5() {
-	auto c = calculate(0b11, {1, 2, 3}, 100);
+	auto c = calculate(0b00, {1, 2, 3}, 100);
 	assert(c == 6);
 }
 void test_calc_6() {
-	auto c = calculate(0b10101, {1, 2, 3, 4, 5, 1}, 100);
+	auto c = calculate(0b01010, {1, 2, 3, 4, 5, 1}, 100);
 	assert(c == 28);
 }
 void test_calc_7() {
