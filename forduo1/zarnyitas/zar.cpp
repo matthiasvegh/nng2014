@@ -3,15 +3,14 @@
 #include <vector>
 #include <list>
 #include <iostream>
+#include <fstream>
 #include <string.h> /* strcat */
-#include <boost/optional.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 
 using namespace boost::multiprecision::literals;
 namespace mp = boost::multiprecision;
 using Num = mp::uint512_t;
 using Rep = std::uint64_t;
-using Opt = boost::optional<Num>;
 
 // 0 -> +   1 -> *
 const char* byte_to_binary(Num x, std::size_t size) {
@@ -133,7 +132,7 @@ void test_calc_7() {
 	assert(c == 27);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	// std::cout << byte_to_binary(7) << std::endl;
 
 	test_calc_1();
@@ -142,15 +141,18 @@ int main() {
 	test_calc_4();
 	test_calc_6();
 	test_calc_7();
-	//F{{2456, 5488, 3762, 6079, 6295, 748, 230}, 51921635}();
-	 //F{{4816, 6427, 1591, 6385, 8694, 5280, 7439, 6747, 733, 7607, 5952, 3082,
-	 //407, 8669, 4780, 7217, 8801, 7170, 9219, 4010, 8029, 4502},
-	 //numAtoi("2279758461274168336368658723528310")}();
-	 F{{8621, 9650, 9057, 5734, 7167, 2190, 8333, 5778, 2921, 728, 8554, 9900,
-	 976, 8026, 4163, 1592, 3009, 7711, 8741, 537, 6184, 544, 7213, 3376,
-	 8821, 9809, 5104, 9986, 3166, 862, 6038, 410, 2054, 4138, 6144, 1646,
-	 520, 8691, 3207, 9591},
-	 numAtoi("78822518924200536562972914309")}();
+
+	std::ifstream file{argv[1]};
+
+	std::vector<Num> values;
+	while (file.good()) {
+		std::string s;
+		file >> s;
+		values.push_back(numAtoi(s.c_str()));
+	}
+	Num result = values.back();
+	values.pop_back();
+	F{values, result}();
 
 	return 0;
 }
