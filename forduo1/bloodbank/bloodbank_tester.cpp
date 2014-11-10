@@ -3,8 +3,28 @@
 #include <ctime>
 #include "bloodbank_api.h"
 
+struct StatisticsRecorder {
+	std::vector<std::vector<std::size_t> > failedSampleses;
+	std::vector<std::size_t> healthySamples;
+
+	void registerHealthy(std::size_t v) {
+		healthySamples.push_back(v);
+	}
+	void registerFail(const std::vector<std::size_t>& vec) {
+		failedSampleses.push_back(std::vector<std::size_t>());
+		std::copy(vec.begin(), vec.end(), std::back_inserter(failedSampleses.back()));
+	}
+
+};
+
 template<typename UnaryFunction>
-std::vector<std::size_t> runRound(BloodBank& bank, std::vector<size_t> indices, std::size_t stride, UnaryFunction& f) {
+std::vector<std::size_t> runRound(
+		BloodBank& bank,
+		std::vector<size_t> indices,
+		std::size_t stride,
+		UnaryFunction& f,
+		StatisticsRecorder& recorder)
+{
 	Batch* batch = bank.createBatch();
 
 	std::size_t i;
@@ -34,9 +54,11 @@ std::vector<std::size_t> runRound(BloodBank& bank, std::vector<size_t> indices, 
 
 		if(healthy) {
 			for(std::vector<size_t>::iterator it=samples.begin(); it!=samples.end(); ++it) {
+				recorder.registerHealthy(*it);
 				f(*it);
 			}
 		} else {
+			recorder.registerFail(samples);
 			if(samples.size() <= 1) {
 				; // sample is unhealthy, ignore
 			} else {
@@ -86,20 +108,21 @@ void runtests(BloodBank& bank)
 
 	const std::size_t totalSamples = bank.getNumberOfSamples();
 	HealthyRegister reg(bank);
+	StatisticsRecorder rec;
 
 	std::vector<std::size_t> failedFirstRound =
-		runRound(bank, indices, stride1, reg);
+		runRound(bank, indices, stride1, reg, rec);
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
 
 	std::vector<std::size_t> failedSecondRound =
-		runRound(bank, failedFirstRound, stride2, reg);
+		runRound(bank, failedFirstRound, stride2, reg, rec);
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
 
 	std::vector<std::size_t> failedThirdRound =
-		runRound(bank, failedSecondRound, stride3, reg);
+		runRound(bank, failedSecondRound, stride3, reg, rec);
 
 }
