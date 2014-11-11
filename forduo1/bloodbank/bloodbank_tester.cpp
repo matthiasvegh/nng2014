@@ -37,16 +37,13 @@ std::vector<std::size_t> runRound(
 		}
 	}
 
+	std::vector<size_t> unknownValues;
 
 	if(i<indices.size()) {
-		std::size_t testId = batch->addTest();
-		for(; i<indices.size(); ++i) {
-			batch->addSample(testId, indices[i]);
-		}
+		std::copy(indices.begin()+i, indices.end(), std::back_inserter(unknownValues));
 	}
 
 	bank.evaluateBatch(batch);
-	std::vector<size_t> unknownValues;
 
 	for(std::size_t test=0; test<batch->getNumberOfTests(); ++test) {
 		std::vector<std::size_t> samples;
