@@ -103,9 +103,7 @@ bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
 void runtests(BloodBank& bank)
 {
 
-	const std::size_t stride1 = 10;
-	const std::size_t stride2 = 2;
-	const std::size_t stride3 = 1;
+	const std::size_t stride1 = 6;
 
 	std::vector<size_t> indices;
 	indices.reserve(bank.getNumberOfSamples());
@@ -124,12 +122,18 @@ void runtests(BloodBank& bank)
 
 	std::vector<std::size_t> failedFirstRound =
 		runRound(bank, indices, stride1, reg, ureg, rec);
+	std::cout<<"healthies found round 1: "<<reg.numberPassed<<std::endl;
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
 
+	std::size_t unHealthyRemaining = float(totalSamples)*0.1 - ureg.numberFailed;
+	float p = unHealthyRemaining/float(failedFirstRound.size());
+	std::size_t stride2 = 1.0/p -2;
+
 	std::vector<std::size_t> failedSecondRound =
 		runRound(bank, failedFirstRound, stride2, reg, ureg, rec);
+	std::cout<<"healthies found round 2: "<<reg.numberPassed<<std::endl;
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
@@ -140,6 +144,6 @@ void runtests(BloodBank& bank)
 	failedSecondRound.resize(minimumToPass+badRemaining);
 
 	std::vector<std::size_t> failedThirdRound =
-		runRound(bank, failedSecondRound, stride3, reg, ureg, rec);
+		runRound(bank, failedSecondRound, 1, reg, ureg, rec);
 
 }
