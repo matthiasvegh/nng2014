@@ -1,7 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <iostream>
+
 #include "bloodbank_api.h"
 
 struct StatisticsRecorder {
