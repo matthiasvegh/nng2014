@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#include <ctime>
+#include <random>
 
 #include "bloodbank_api.h"
 
@@ -108,9 +108,10 @@ void runtests(BloodBank& bank)
 		indices.push_back(i);
 	}
 
-	std::srand(std::time(0));
+	std::random_device rd;
+	std::mt19937 g(rd());
 
-	std::random_shuffle(indices.begin(), indices.end());
+	std::shuffle(indices.begin(), indices.end(), g);
 
 	const std::size_t totalSamples = bank.getNumberOfSamples();
 	HealthyRegister reg(bank);
@@ -121,7 +122,7 @@ void runtests(BloodBank& bank)
 		runRound(bank, indices, stride1, reg, ureg, rec);
 
 	HANDLEROUND(reg, totalSamples);
-	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
+	std::shuffle(failedFirstRound.begin(), failedFirstRound.end(), g);
 
 	std::size_t unHealthyRemaining = float(totalSamples)*0.1 - ureg.numberFailed;
 	float p = unHealthyRemaining/float(failedFirstRound.size());
@@ -131,7 +132,7 @@ void runtests(BloodBank& bank)
 		runRound(bank, failedFirstRound, stride2, reg, ureg, rec);
 
 	HANDLEROUND(reg, totalSamples);
-	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
+	std::shuffle(failedSecondRound.begin(), failedSecondRound.end(), g);
 
 	const std::size_t badRemaining = std::size_t(indices.size()/10)+1 - ureg.numberFailed;
 	const std::size_t minimumToPass = (std::size_t(indices.size()*0.8)+1) - reg.numberPassed;
