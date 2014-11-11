@@ -134,6 +134,11 @@ void runtests(BloodBank& bank)
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
 
+	const std::size_t badRemaining = std::size_t(indices.size()/10)+1 - ureg.numberFailed;
+	const std::size_t minimumToPass = (std::size_t(indices.size()*0.8)+1) - reg.numberPassed;
+
+	failedSecondRound.resize(minimumToPass+badRemaining);
+
 	std::vector<std::size_t> failedThirdRound =
 		runRound(bank, failedSecondRound, stride3, reg, ureg, rec);
 
