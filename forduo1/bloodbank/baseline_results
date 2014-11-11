@@ -1,3 +1,24 @@
+none
+Test count: 10
+Batch count: 2
+Identified safe: 20 / 20
+Discarded  safe: 0 / 20
+Discarded   bad: 0 / 20
+Discarded total: 0 / 20
+five
+Test count: 56
+Batch count: 2
+Identified safe: 95 / 100
+Discarded  safe: 0 / 100
+Discarded   bad: 5 / 100
+Discarded total: 5 / 100
+small
+Test count: 5
+Batch count: 2
+Identified safe: 4 / 5
+Discarded  safe: 0 / 5
+Discarded   bad: 1 / 5
+Discarded total: 1 / 5
 blood_001.txt
 Test count: 70
 Batch count: 2

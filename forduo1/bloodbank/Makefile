@@ -4,8 +4,14 @@ all: bloodbank_tester test_creator run
 clean:
 	rm -f *.o bloodbank_tester testcreator .runresults
 
-run: bloodbank_tester blood_001.txt blood_002.txt blood_003.txt hundredthousand
+run: bloodbank_tester blood_001.txt blood_002.txt blood_003.txt hundredthousand none five small
 	rm -rf .runresults
+	@echo 'none' >> .runresults
+	./bloodbank_tester none >> .runresults
+	@echo 'five' >> .runresults
+	./bloodbank_tester five >> .runresults
+	@echo 'small' >> .runresults
+	./bloodbank_tester small >> .runresults
 	@echo 'blood_001.txt' >> .runresults
 	./bloodbank_tester blood_001.txt >> .runresults
 	@echo 'blood_002.txt' >> .runresults

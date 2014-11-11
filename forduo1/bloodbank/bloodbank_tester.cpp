@@ -1,7 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-
+#include <iostream>
 #include "bloodbank_api.h"
 
 struct StatisticsRecorder {
@@ -27,6 +27,9 @@ std::vector<std::size_t> runRound(
 		UnhealthyHandler& uh,
 		StatisticsRecorder& recorder)
 {
+	if(indices.size() < stride) {
+		return indices;
+	}
 	Batch* batch = bank.createBatch();
 
 	std::size_t i;
@@ -101,6 +104,7 @@ void runtests(BloodBank& bank)
 {
 
 	const std::size_t stride1 = 6;
+	const std::size_t stride2 = 3;
 
 	std::vector<size_t> indices;
 	indices.reserve(bank.getNumberOfSamples());
@@ -124,11 +128,7 @@ void runtests(BloodBank& bank)
 	HANDLEROUND(reg, totalSamples);
 	std::shuffle(failedFirstRound.begin(), failedFirstRound.end(), g);
 
-	std::size_t unHealthyRemaining = float(totalSamples)*0.1 - ureg.numberFailed;
-	float p = unHealthyRemaining/float(failedFirstRound.size());
-	std::size_t stride2 = 1.0/p -2;
-
-	std::vector<std::size_t> failedSecondRound =
+		std::vector<std::size_t> failedSecondRound =
 		runRound(bank, failedFirstRound, stride2, reg, ureg, rec);
 
 	HANDLEROUND(reg, totalSamples);
