@@ -7,13 +7,14 @@
 int main(int, char** argv) {
 
 	auto n = boost::lexical_cast<std::size_t>(argv[1]);
+	auto p = float(boost::lexical_cast<std::size_t>(argv[2]))/100.0;
 	std::vector<std::size_t> output(n);
 
 	for(std::size_t i=0; i<n; i++) {
 		output[i] = 0;
 	}
 
-	std::size_t unhealthy = std::round(double(n)/10.0);
+	std::size_t unhealthy = std::round(double(n)*p);
 
 	for(std::size_t i=0; i<unhealthy; ++i) {
 		output[i] = 1;
