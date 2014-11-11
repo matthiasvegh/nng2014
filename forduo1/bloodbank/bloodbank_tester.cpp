@@ -1,7 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
-#include <iostream>
+
 #include "bloodbank_api.h"
 
 struct StatisticsRecorder {
@@ -119,7 +119,6 @@ void runtests(BloodBank& bank)
 
 	std::vector<std::size_t> failedFirstRound =
 		runRound(bank, indices, stride1, reg, ureg, rec);
-	std::cout<<"healthies found round 1: "<<reg.numberPassed<<std::endl;
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedFirstRound.begin(), failedFirstRound.end());
@@ -130,7 +129,6 @@ void runtests(BloodBank& bank)
 
 	std::vector<std::size_t> failedSecondRound =
 		runRound(bank, failedFirstRound, stride2, reg, ureg, rec);
-	std::cout<<"healthies found round 2: "<<reg.numberPassed<<std::endl;
 
 	HANDLEROUND(reg, totalSamples);
 	std::random_shuffle(failedSecondRound.begin(), failedSecondRound.end());
