@@ -1,18 +1,20 @@
 #!/bin/bash
 
-if [ -n "$1" ]; then
-	seed=$1
+basename=$1
+
+if [ -n "$2" ]; then
+	seed=$2
 else
 	seed=0
 fi
 
 for ((i=0; i<1000; ++i)); do
-	name=tiles3_gen_$i
+	name=${basename}_gen_$i
 	echo $name >&2
 	targetName=${name}.target
 	outputName=${name}.out
-	if ./build-clang_release/bin/findTarget tiles3.txt $((seed + i)) >$targetName; then
-		./build-clang_release/bin/padlolap tiles3.txt $targetName >$outputName
+	if ./build-clang_release/bin/findTarget ${basename}.txt $((seed + i)) >$targetName; then
+		./build-clang_release/bin/padlolap ${basename}.txt $targetName >$outputName
 	fi
 done
 
