@@ -28,7 +28,7 @@ Status findTargetStatus(const Status& status, unsigned seed)
 	boost::random::uniform_int_distribution<std::size_t> randomColumn{0, status.field.width() - 1};
 	boost::random::uniform_int_distribution<std::size_t> randomRow{0, status.field.height() - 1};
 
-	for (int i = 0; i < 100; ++i) {
+	for (int i = 0; i < 20; ++i) {
 
 		std::vector<std::pair<Point, std::size_t>> startingPoints;
 		Status result = status;

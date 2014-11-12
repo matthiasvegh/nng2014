@@ -2,6 +2,7 @@
 #define SRC_GROW_HPP
 
 #include "Status.hpp"
+#include "DumperFunctions.hpp"
 #include <deque>
 #include <vector>
 #include <algorithm>
@@ -48,13 +49,57 @@ class Grow {
 		}
 	}
 
+	void occupy(Point p, GrowData<T>& data)
+	{
+		status[p] = data.value;
+		data.next.push_back(p+Point::p10);
+		data.next.push_back(p+Point::pm10);
+		data.next.push_back(p+Point::p01);
+		data.next.push_back(p+Point::p0m1);
+		++data.size;
+	}
+
+	void growIteration(GrowData<T>& data)
+	{
+		Point p = data.next.front();
+		data.next.pop_front();
+
+		if (!arrayAt(visited, p, true)) {
+			if (status[p] == data.value) {
+				flood(p, data);
+			} else {
+				visited[p] = true;
+				occupy(p, data);
+			}
+
+		}
+	}
+
+	template <typename Condition, typename Action>
+	void iteration(Condition condition, Action action)
+	{
+		while (std::find_if(datas.begin(), datas.end(), condition) != datas.end())
+		{
+			boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
+			std::size_t id = randomId(rng);
+			auto& data = datas[id];
+
+			if (condition(data)) {
+				action(data);
+			}
+		}
+	}
+
 public:
 	Grow(Array<T>& status, RandomGenerator& rng):
 		status(status), rng(rng)
-	{}
+	{
+
+	}
 
 	bool operator()(const std::vector<std::pair<Point, std::size_t>>& startingPoints)
 	{
+		// Phase 1: initialize
 		for (const auto& startingPoint: startingPoints) {
 			datas.emplace_back();
 			auto& data = datas.back();
@@ -65,41 +110,29 @@ public:
 			flood(startingPoint.first, data);
 		}
 
-		bool result = true;
-		while (!datas.empty()) {
-			boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
-			std::size_t id = randomId(rng);
-			auto& data = datas[id];
+		// Phase 2: Occupy until desired size is reached
+		iteration([](const Data& data)
+			{
+				return !data.next.empty() && data.size() < data.targetSize;
+			}, [](Data& data) { growIteration(data); });
 
-			Point p = data.next.front();
-			data.next.pop_front();
+		// Phase 3: Occupy all remaining fields
+		iteration([](const Data& data)
+			{
+				return !data.next.empty();
+			}, [](Data& data) { growIteration(data); });
 
-			//std::cerr << id << "-" << datas.size() << "(" << data.value << "): " << data.next.size() << " -> ";
-			if (!arrayAt(visited, p, true)) {
-				visited[p] = true;
-				status[p] = data.value;
-				data.next.push_back(p+Point::p10);
-				data.next.push_back(p+Point::pm10);
-				data.next.push_back(p+Point::p01);
-				data.next.push_back(p+Point::p0m1);
-				++data.size;
+		// Phase 4: Occupy from each other until equilibrium is reached
+		visited.fill(false);
+		iteration([](const Data& data)
+			{
+				return data.size() < data.targetSize;
+			}, [](Data& data)
+			{
+				auto it = std::find_if(data
+			});
 
-			}
-
-			//std::cerr << data.next.size() << std::endl;
-
-			if (data.size == data.targetSize || data.next.empty()) {
-
-				if (data.size != data.targetSize) {
-					result = false;
-				}
-
-				//std::cerr << id << "(" << data.value << ") finished" << std::endl;
-				datas.erase(datas.begin() + id);
-			}
-		}
-
-		return result;
+		return true;
 	}
 };
 
