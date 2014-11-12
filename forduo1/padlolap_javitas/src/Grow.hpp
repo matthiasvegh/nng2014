@@ -16,9 +16,9 @@ struct GrowData {
 	std::size_t targetSize = 0;
 };
 
-template <typename T, typename Pred, typename RandomGenerator>
+template <typename T, typename RandomGenerator>
 bool grow(Array<T>& status, const std::vector<std::pair<Point, std::size_t>>& startingPoints,
-		Pred isAllowed, RandomGenerator& rng)
+		RandomGenerator& rng)
 {
 	Array<bool> visited{status.width(), status.height()};
 
@@ -65,15 +65,12 @@ bool grow(Array<T>& status, const std::vector<std::pair<Point, std::size_t>>& st
 		//std::cerr << id << "-" << datas.size() << "(" << data.value << "): " << data.next.size() << " -> ";
 		if (!arrayAt(visited, p, true)) {
 			visited[p] = true;
-
-			if (isAllowed(p, data.value)) {
-				status[p] = data.value;
-				data.next.push_back(p+Point::p10);
-				data.next.push_back(p+Point::pm10);
-				data.next.push_back(p+Point::p01);
-				data.next.push_back(p+Point::p0m1);
-				++data.size;
-			}
+			status[p] = data.value;
+			data.next.push_back(p+Point::p10);
+			data.next.push_back(p+Point::pm10);
+			data.next.push_back(p+Point::p01);
+			data.next.push_back(p+Point::p0m1);
+			++data.size;
 
 		}
 

@@ -45,10 +45,7 @@ Status findTargetStatus(const Status& status, unsigned seed)
 		auto field = result.field;
 		bool ok = false;
 
-		while (tries > 0 && !(ok = grow(field, startingPoints, [&result](Point p, int)
-				{
-					return result.field[p] < 0;
-				}, rng))) {
+		while (tries > 0 && !(ok = grow(field, startingPoints, rng))) {
 			--tries;
 			field = result.field;
 		}
