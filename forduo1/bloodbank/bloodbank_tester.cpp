@@ -16,6 +16,37 @@ struct StatisticsRecorder {
 		std::copy(vec.begin(), vec.end(), std::back_inserter(failedSampleses.back()));
 	}
 
+	bool isHealthy(std::size_t index) {
+		for(std::size_t i = 0; i<failedSampleses.size(); ++i) {
+			bool isPresent = false;
+			for(std::size_t j = 0; j<failedSampleses[i].size(); ++j) {
+				if(failedSampleses[i][j] == index) {
+					isPresent = true;
+					break;
+				}
+			}
+			if(isPresent) {
+				// At this point, we want to determine if index caused an
+				// otherwise healty round to fail
+				bool allHealthy = true;
+
+				for(std::size_t other = 0; other < failedSampleses[i].size(); ++other) {
+					if(std::find(healthySamples.begin(), healthySamples.end(), failedSampleses[i][other]) == healthySamples.end()) {
+						allHealthy = false;
+						break;
+					}
+				}
+				if(allHealthy) {
+					return true;
+				} else {
+					continue;
+				}
+
+			}
+		}
+		return false;
+	}
+
 };
 
 template<typename HealthyHandler, typename UnhealthyHandler>
@@ -131,7 +162,7 @@ void runtests(BloodBank& bank)
 	float p = unHealthyRemaining/float(failedFirstRound.size());
 	std::size_t stride2;
 	if(static_cast<std::size_t>(p) >= 1) {
-		stride2 = 1.0/p;
+		stride2 = 1.0/p+3;
 	} else {
 		stride2 = 2;
 	}
