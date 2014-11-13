@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <iterator>
 
 #include "bloodbank_api.h"
 
@@ -126,7 +127,7 @@ bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
 }
 
 #define HANDLEROUND(h, s) \
-	if(not doWeContinue((h).numberPassed, (s))) { \
+	if(! doWeContinue((h).numberPassed, (s))) { \
 		return; \
 	}\
 
