@@ -53,11 +53,18 @@ Status findTargetStatus(const Status& status, unsigned seed)
 		}
 
 		if (ok) {
-			int n[] = {0, 0, 0};
+			if (getNumberOfPartitions(field) != 3) {
+				throw std::logic_error{"Bad number of partitions"};
+			}
+
+			std::size_t n[] = {0, 0, 0};
 			for (Point p: arrayRange(field)) {
 				++n[field[p]];
 			}
 
+			if (n[i] != data[i].numberOfTiles) {
+				throw std::logic_error{"Bad tile number"};
+			}
 			//for (int i = 0; i < 3; ++i) {
 				//std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
 					//std::endl;
