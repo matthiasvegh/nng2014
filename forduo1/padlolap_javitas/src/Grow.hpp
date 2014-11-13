@@ -100,14 +100,14 @@ public:
 	bool operator()(const std::vector<std::pair<Point, std::size_t>>& startingPoints)
 	{
 		// Phase 1: initialize
-		for (const auto& startingPoint: startingPoints) {
+		for (std::size_t i = 0; i < startingPoints.size(); ++i) {
 			datas.emplace_back();
 			auto& data = datas.back();
 
-			data.value = status[startingPoint.first];
-			data.targetSize = std::min(startingPoint.second, status.width()*status.height());
+			data.value = i;
+			data.targetSize = std::min(startingPoints[i].second, status.width()*status.height());
 
-			flood(startingPoint.first, data);
+			flood(startingPoints[i].first, data);
 		}
 
 		// Phase 2: Occupy until desired size is reached
