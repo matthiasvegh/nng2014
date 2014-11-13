@@ -22,6 +22,7 @@ struct GrowData {
 
 template <typename T, typename RandomGenerator>
 class Grow {
+	Array<T> originalStatus;
 	Array<T>& status;
 	RandomGenerator& rng;
 	Array<bool> visited{status.width(), status.height()};
@@ -124,7 +125,7 @@ class Grow {
 
 public:
 	Grow(Array<T>& status, RandomGenerator& rng):
-		status(status), rng(rng)
+		originalStatus(status), status(status), rng(rng)
 	{
 
 	}
@@ -155,7 +156,6 @@ public:
 				return !data.next.empty();
 			}, [&](GrowData<T>& data) { growIteration(data); });
 
-		//dumpArray(std::cerr, status);
 		// Phase 4: Occupy from each other until equilibrium is reached
 		iteration([](const GrowData<T>& data)
 			{
@@ -167,7 +167,8 @@ public:
 				if (!perturbIteration(data, [&](Point p)
 					{
 						const auto& otherData = datas[status[p]];
-						return otherData.size > otherData.targetSize;
+						return otherData.size > otherData.targetSize &&
+								originalStatus[p] != status[p];
 					})) {
 					data.stuck = true;
 				}
