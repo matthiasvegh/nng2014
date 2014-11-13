@@ -14,6 +14,7 @@ template <typename T>
 struct GrowData {
 	std::deque<Point> next;
 	Point nextSearch;
+	bool stuck = false;
 	T value;
 	std::size_t size = 0;
 	std::size_t targetSize = 0;
@@ -26,7 +27,7 @@ class Grow {
 	Array<bool> visited{status.width(), status.height()};
 	std::vector<GrowData<T>> datas;
 
-	void flood(Point p0, GrowData<T>& data)
+	void flood(Point p0, GrowData<T>& data, bool updateSize = true)
 	{
 		std::vector<Point> pointsToVisit{p0};
 		pointsToVisit.reserve(status.width()*status.height());
@@ -39,7 +40,9 @@ class Grow {
 
 				if (status[p] == data.value) {
 					visited[p] = true;
-					++data.size;
+					if (updateSize) {
+						++data.size;
+					}
 					pointsToVisit.push_back(p+Point::p10);
 					pointsToVisit.push_back(p+Point::pm10);
 					pointsToVisit.push_back(p+Point::p01);
@@ -78,26 +81,30 @@ class Grow {
 	}
 
 	template <typename Condition>
-	void growIteration(GrowData<T>& data, Condition condition)
+	bool perturbIteration(GrowData<T>& data, Condition condition)
 	{
+		//std::cerr << "Perturb " << data.value << " (size " << data.size <<
+			//" -> " << data.targetSize << ")\n";
 		visited.fill(false);
 		data.next.clear();
-		flood(data.nextSearch, data);
+		flood(data.nextSearch, data, false);
 
 		std::shuffle(data.next.begin(), data.next.end(), rng);
 		for (Point p: data.next) {
-			Point p = data.next[randomId(rng)];
-
-			if (condition(p)) {
-				if (status[p] == data.value) {
-					flood(p, data);
-				} else {
-					visited[p] = true;
-					occupy(p, data);
-				}
-
+			//std::cerr << "  " << p << ": ";
+			if (!visited[p] && condition(p)) {
+				//std::cerr << "Occupying\n";
+				--datas[status[p]].size;
+				occupy(p, data);
+				data.nextSearch = p;
+				return true;
+			} else {
+				//std::cerr << "Not occupying\n";
 			}
 		}
+
+		//std::cerr << "  Stuck.\n";
+		return false;
 	}
 
 	template <typename Condition, typename Action>
@@ -148,17 +155,28 @@ public:
 				return !data.next.empty();
 			}, [&](GrowData<T>& data) { growIteration(data); });
 
+		//dumpArray(std::cerr, status);
 		// Phase 4: Occupy from each other until equilibrium is reached
-		//visited.fill(false);
-		//iteration([](const Data& data)
-			//{
-				//return data.size() < data.targetSize;
-			//}, [](Data& data)
-			//{
-				//auto it = std::find_if(data
-			//});
+		iteration([](const GrowData<T>& data)
+			{
+				//std::cerr << "--> " << data.value << ": " << data.size <<
+						//" -> " << data.targetSize << " " << data.stuck << '\n';
+				return !data.stuck && data.size < data.targetSize;
+			}, [&](GrowData<T>& data)
+			{
+				if (!perturbIteration(data, [&](Point p)
+					{
+						const auto& otherData = datas[status[p]];
+						return otherData.size > otherData.targetSize;
+					})) {
+					data.stuck = true;
+				}
+			});
 
-		return true;
+		return std::find_if(datas.begin(), datas.end(), [](const GrowData<T>& data)
+			{
+				return data.size != data.targetSize;
+			}) == datas.end();
 	}
 };
 

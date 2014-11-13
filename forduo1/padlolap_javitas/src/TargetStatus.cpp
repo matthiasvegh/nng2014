@@ -58,10 +58,10 @@ Status findTargetStatus(const Status& status, unsigned seed)
 				++n[field[p]];
 			}
 
-			for (int i = 0; i < 3; ++i) {
-				std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
-					std::endl;
-			}
+			//for (int i = 0; i < 3; ++i) {
+				//std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
+					//std::endl;
+			//}
 
 			result.field = field;
 			return result;
