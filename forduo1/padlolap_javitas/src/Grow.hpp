@@ -11,6 +11,21 @@
 #include <random>
 
 template <typename T>
+std::size_t getNumberOfPartitions(const Array<T>& status)
+{
+	int result = 0;
+	Array<bool> visited(status.width(), status.height(), false);
+
+	for (Point p: arrayRange(status)) {
+		if (!visited[p]) {
+			floodFill(status, p, visited);
+			++result;
+		}
+	}
+	return result;
+}
+
+template <typename T>
 struct GrowData {
 	std::deque<Point> next;
 	Point nextSearch;
@@ -26,6 +41,7 @@ class Grow {
 	Array<T>& status;
 	RandomGenerator& rng;
 	Array<bool> visited{status.width(), status.height()};
+	Array<bool> perturbated{status.width(), status.height()};
 	std::vector<GrowData<T>> datas;
 
 	void flood(Point p0, GrowData<T>& data, bool updateSize = true)
@@ -84,23 +100,19 @@ class Grow {
 	template <typename Condition>
 	bool perturbIteration(GrowData<T>& data, Condition condition)
 	{
-		//std::cerr << "Perturb " << data.value << " (size " << data.size <<
-			//" -> " << data.targetSize << ")\n";
 		visited.fill(false);
 		data.next.clear();
 		flood(data.nextSearch, data, false);
 
 		std::shuffle(data.next.begin(), data.next.end(), rng);
 		for (Point p: data.next) {
-			//std::cerr << "  " << p << ": ";
-			if (!visited[p] && condition(p)) {
-				//std::cerr << "Occupying\n";
+			if (!visited[p] && !perturbated[p] && condition(p)) {
 				--datas[status[p]].size;
-				occupy(p, data);
+				status[p] = data.value;
+				++data.size;
 				data.nextSearch = p;
+				perturbated[p] = true;
 				return true;
-			} else {
-				//std::cerr << "Not occupying\n";
 			}
 		}
 
