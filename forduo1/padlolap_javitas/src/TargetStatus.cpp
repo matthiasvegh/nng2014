@@ -53,6 +53,16 @@ Status findTargetStatus(const Status& status, unsigned seed)
 		}
 
 		if (ok) {
+			int n[] = {0, 0, 0};
+			for (Point p: arrayRange(field)) {
+				++n[field[p]];
+			}
+
+			for (int i = 0; i < 3; ++i) {
+				std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
+					std::endl;
+			}
+
 			result.field = field;
 			return result;
 		}

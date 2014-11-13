@@ -111,26 +111,26 @@ public:
 		}
 
 		// Phase 2: Occupy until desired size is reached
-		iteration([](const Data& data)
+		iteration([](const GrowData<T>& data)
 			{
-				return !data.next.empty() && data.size() < data.targetSize;
-			}, [](Data& data) { growIteration(data); });
+				return !data.next.empty() && data.size < data.targetSize;
+			}, [&](GrowData<T>& data) { growIteration(data); });
 
 		// Phase 3: Occupy all remaining fields
-		iteration([](const Data& data)
+		iteration([](const GrowData<T>& data)
 			{
 				return !data.next.empty();
-			}, [](Data& data) { growIteration(data); });
+			}, [&](GrowData<T>& data) { growIteration(data); });
 
 		// Phase 4: Occupy from each other until equilibrium is reached
-		visited.fill(false);
-		iteration([](const Data& data)
-			{
-				return data.size() < data.targetSize;
-			}, [](Data& data)
-			{
-				auto it = std::find_if(data
-			});
+		//visited.fill(false);
+		//iteration([](const Data& data)
+			//{
+				//return data.size() < data.targetSize;
+			//}, [](Data& data)
+			//{
+				//auto it = std::find_if(data
+			//});
 
 		return true;
 	}
