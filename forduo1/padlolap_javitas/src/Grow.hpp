@@ -8,10 +8,12 @@
 #include <algorithm>
 #include <iostream>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <random>
 
 template <typename T>
 struct GrowData {
 	std::deque<Point> next;
+	Point nextSearch;
 	T value;
 	std::size_t size = 0;
 	std::size_t targetSize = 0;
@@ -75,6 +77,29 @@ class Grow {
 		}
 	}
 
+	template <typename Condition>
+	void growIteration(GrowData<T>& data, Condition condition)
+	{
+		visited.fill(false);
+		data.next.clear();
+		flood(data.nextSearch, data);
+
+		std::shuffle(data.next.begin(), data.next.end(), rng);
+		for (Point p: data.next) {
+			Point p = data.next[randomId(rng)];
+
+			if (condition(p)) {
+				if (status[p] == data.value) {
+					flood(p, data);
+				} else {
+					visited[p] = true;
+					occupy(p, data);
+				}
+
+			}
+		}
+	}
+
 	template <typename Condition, typename Action>
 	void iteration(Condition condition, Action action)
 	{
@@ -106,6 +131,7 @@ public:
 
 			data.value = i;
 			data.targetSize = std::min(startingPoints[i].second, status.width()*status.height());
+			data.nextSearch = startingPoints[i].first;
 
 			flood(startingPoints[i].first, data);
 		}
