@@ -132,10 +132,20 @@ bool doWeContinue(std::size_t numberPassed, std::size_t numberOfSamples) {
 	}\
 
 
+std::size_t getEnv(const char* s, std::size_t d) {
+	const char* result = std::getenv(s);
+	if(!result) {
+		return d;
+	}
+
+	return std::atoi(result);
+
+}
+
 void runtests(BloodBank& bank)
 {
 
-	const std::size_t stride1 = 6;
+	const std::size_t stride1 = getEnv("STRIDE1", 6);
 
 	std::vector<size_t> indices;
 	indices.reserve(bank.getNumberOfSamples());
@@ -163,7 +173,7 @@ void runtests(BloodBank& bank)
 	float p = unHealthyRemaining/float(failedFirstRound.size());
 	std::size_t stride2;
 	if(static_cast<std::size_t>(p) >= 1) {
-		stride2 = 1.0/p+3;
+		stride2 = 1.0/p+getEnv("STRIDE2", 2);
 	} else {
 		stride2 = 2;
 	}
