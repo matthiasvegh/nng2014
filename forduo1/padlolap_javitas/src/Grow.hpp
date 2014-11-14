@@ -3,6 +3,7 @@
 
 #include "Status.hpp"
 #include "DumperFunctions.hpp"
+#include "PointRange.hpp"
 #include <deque>
 #include <vector>
 #include <algorithm>
@@ -41,7 +42,6 @@ class Grow {
 	Array<T>& status;
 	RandomGenerator& rng;
 	Array<bool> visited{status.width(), status.height()};
-	Array<bool> perturbated{status.width(), status.height()};
 	std::vector<GrowData<T>> datas;
 
 	void flood(Point p0, GrowData<T>& data, bool updateSize = true)
@@ -97,6 +97,25 @@ class Grow {
 		}
 	}
 
+	bool checkUnity(Point p, T originalValue)
+	{
+		Bounds bounds{Point{p.x - 1, p.y - 1}, Point{p.x + 2, p.y + 2}};
+		for (Point p: PointRange(bounds.min, bounds.max)) {
+			if (arrayAt(status, p, -1) == originalValue) {
+				Array<bool> found{status.width(), status.height(), false};
+				floodFill(status, p, found, &bounds);
+
+				for (Point p2: PointRange(bounds.min, bounds.max)) {
+					if (status[p2] == originalValue && !found[p2]) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return true;
+	}
+
 	template <typename Condition>
 	bool perturbIteration(GrowData<T>& data, Condition condition)
 	{
@@ -106,13 +125,17 @@ class Grow {
 
 		std::shuffle(data.next.begin(), data.next.end(), rng);
 		for (Point p: data.next) {
-			if (!visited[p] && !perturbated[p] && condition(p)) {
-				--datas[status[p]].size;
+			if (!visited[p] && condition(p)) {
+				auto originalValue = status[p];
 				status[p] = data.value;
-				++data.size;
-				data.nextSearch = p;
-				perturbated[p] = true;
-				return true;
+				if (checkUnity(p, originalValue)) {
+					--datas[status[p]].size;
+					++data.size;
+					data.nextSearch = p;
+					return true;
+				} else {
+					status[p] = originalValue;
+				}
 			}
 		}
 
