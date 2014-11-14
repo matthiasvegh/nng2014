@@ -169,7 +169,7 @@ void runtests(BloodBank& bank)
 	HANDLEROUND(reg, totalSamples);
 	std::shuffle(failedFirstRound.begin(), failedFirstRound.end(), g);
 
-	std::size_t unHealthyRemaining = float(totalSamples)*0.1 - ureg.numberFailed;
+	std::size_t unHealthyRemaining = std::size_t(float(totalSamples)*0.1) - ureg.numberFailed;
 	float p = unHealthyRemaining/float(failedFirstRound.size());
 	std::size_t stride2;
 	if(static_cast<std::size_t>(p) >= 1) {
