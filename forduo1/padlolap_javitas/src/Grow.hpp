@@ -106,7 +106,7 @@ class Grow {
 				floodFill(status, p, found, &bounds);
 
 				for (Point p2: PointRange(bounds.min, bounds.max)) {
-					if (status[p2] == originalValue && !found[p2]) {
+					if (arrayAt(status, p2, -1) == originalValue && !found[p2]) {
 						return false;
 					}
 				}

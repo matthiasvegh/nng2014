@@ -18,7 +18,7 @@ void floodFill(const Array<T>& status, Point p0, Array<bool>& result, const Boun
 			std::max(0, bounds->min.y)};
 		realBounds.max = Point{
 			std::min(bounds->max.x, static_cast<int>(status.width())),
-			std::max(bounds->max.y, static_cast<int>(status.height()))};
+			std::min(bounds->max.y, static_cast<int>(status.height()))};
 	} else {
 		realBounds.min = Point{0, 0};
 		realBounds.max = Point{
