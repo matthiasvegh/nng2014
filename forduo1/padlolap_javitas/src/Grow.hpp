@@ -180,10 +180,10 @@ public:
 		}
 
 		// Phase 2: Occupy until desired size is reached
-		iteration([](const GrowData<T>& data)
-			{
-				return !data.next.empty() && data.size < data.targetSize;
-			}, [&](GrowData<T>& data) { growIteration(data); });
+		//iteration([](const GrowData<T>& data)
+			//{
+				//return !data.next.empty() && data.size < data.targetSize;
+			//}, [&](GrowData<T>& data) { growIteration(data); });
 
 		// Phase 3: Occupy all remaining fields
 		iteration([](const GrowData<T>& data)
@@ -192,16 +192,16 @@ public:
 			}, [&](GrowData<T>& data) { growIteration(data); });
 
 		// Phase 4: Perturb the edges randomly
-		//boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
-		//std::size_t iterationNumber = status.width() * status.height() / 3;
-		//for (std::size_t i = 0; i < iterationNumber; ++i) {
-			//std::size_t id = randomId(rng);
+		boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
+		std::size_t iterationNumber = status.width() * status.height() / 6;
+		for (std::size_t i = 0; i < iterationNumber; ++i) {
+			std::size_t id = randomId(rng);
 
-			//perturbIteration(datas[id], [&](Point p)
-				//{
-					//return originalStatus[p] != status[p];
-				//});
-		//}
+			perturbIteration(datas[id], [&](Point p)
+				{
+					return originalStatus[p] != status[p];
+				});
+		}
 
 		// Phase 5: Occupy from each other until equilibrium is reached
 		iteration([](const GrowData<T>& data)
