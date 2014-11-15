@@ -3,10 +3,12 @@
 #include "Grow.hpp"
 #include "DumperFunctions.hpp"
 #include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/random_device.hpp>
 
 namespace {
 
@@ -17,14 +19,22 @@ struct ColorData {
 
 }
 
-Status findTargetStatus(const Status& status, unsigned seed)
+Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 {
 	ColorData data[3];
 	for (Point p: arrayRange(status.field)) {
 		++data[status.field[p]].numberOfTiles;
 	}
 
-	boost::random::mt19937 rng{seed};
+	boost::random::mt19937 rng;
+
+	if (seed) {
+		rng.seed(*seed);
+	} else {
+		boost::random::random_device rnd;
+		rng.seed(rnd);
+	}
+
 	boost::random::uniform_int_distribution<std::size_t> randomColumn{0, status.field.width() - 1};
 	boost::random::uniform_int_distribution<std::size_t> randomRow{0, status.field.height() - 1};
 

@@ -5,14 +5,18 @@
 #include <fstream>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 
 int main(int argc, char* argv[])
 {
-	if (argc != 3) {
+	if (argc < 2) {
 		throw std::logic_error{"Bad parameter"};
 	}
 	Status status = loadStatusFromFile(argv[1]);
-	unsigned seed = boost::lexical_cast<unsigned>(argv[2]);
+	boost::optional<unsigned> seed;
+	if (argc > 2) {
+		seed = boost::lexical_cast<unsigned>(argv[2]);
+	}
 
 	Status target = findTargetStatus(status, seed);
 	std::cout << target.field.height() << " " << target.field.width() << std::endl;
