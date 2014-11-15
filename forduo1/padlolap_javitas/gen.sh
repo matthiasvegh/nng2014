@@ -30,6 +30,8 @@ while true; do
 		else
 			rm $outputName $targetName
 		fi
+	else
+		rm $targetName
 	fi
 	((++i))
 done
