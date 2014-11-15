@@ -193,7 +193,7 @@ public:
 
 		// Phase 4: Perturb the edges randomly
 		boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
-		std::size_t iterationNumber = status.width() * status.height() / 6;
+		std::size_t iterationNumber = status.width() * status.height() / 3;
 		for (std::size_t i = 0; i < iterationNumber; ++i) {
 			std::size_t id = randomId(rng);
 
