@@ -9,11 +9,12 @@ else
 fi
 
 for ((i=0; i<1000; ++i)); do
-	name=${basename}_gen_$i
+	currentSeed=$((seed + i))
+	name=${basename}_gen_$currentSeed
 	echo $name >&2
 	targetName=${name}.target
 	outputName=${name}.out
-	if ./build-clang_release/bin/findTarget ${basename}.txt $((seed + i)) >$targetName; then
+	if ./build-clang_release/bin/findTarget ${basename}.txt $currentSeed >$targetName; then
 		./build-clang_release/bin/padlolap ${basename}.txt $targetName >$outputName
 	fi
 done

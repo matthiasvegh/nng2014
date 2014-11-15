@@ -129,7 +129,7 @@ class Grow {
 				auto originalValue = status[p];
 				status[p] = data.value;
 				if (checkUnity(p, originalValue)) {
-					--datas[status[p]].size;
+					--datas[originalValue].size;
 					++data.size;
 					data.nextSearch = p;
 					return true;
@@ -146,9 +146,9 @@ class Grow {
 	template <typename Condition, typename Action>
 	void iteration(Condition condition, Action action)
 	{
+		boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
 		while (std::find_if(datas.begin(), datas.end(), condition) != datas.end())
 		{
-			boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
 			std::size_t id = randomId(rng);
 			auto& data = datas[id];
 
@@ -191,7 +191,19 @@ public:
 				return !data.next.empty();
 			}, [&](GrowData<T>& data) { growIteration(data); });
 
-		// Phase 4: Occupy from each other until equilibrium is reached
+		// Phase 4: Perturb the edges randomly
+		//boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
+		//std::size_t iterationNumber = status.width() * status.height() / 3;
+		//for (std::size_t i = 0; i < iterationNumber; ++i) {
+			//std::size_t id = randomId(rng);
+
+			//perturbIteration(datas[id], [&](Point p)
+				//{
+					//return originalStatus[p] != status[p];
+				//});
+		//}
+
+		// Phase 5: Occupy from each other until equilibrium is reached
 		iteration([](const GrowData<T>& data)
 			{
 				//std::cerr << "--> " << data.value << ": " << data.size <<

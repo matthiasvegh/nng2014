@@ -47,6 +47,7 @@ Status findTargetStatus(const Status& status, unsigned seed)
 			auto field = result.field;
 
 			if (grow(field, startingPoints, rng)) {
+				std::cerr << "Tries: " << outerTries << " : " << innerTries << '\n';
 				if (getNumberOfPartitions(field) != 3) {
 					throw std::logic_error{"Bad number of partitions"};
 				}
@@ -63,7 +64,6 @@ Status findTargetStatus(const Status& status, unsigned seed)
 						throw std::logic_error{"Bad tile number"};
 					}
 				}
-				std::cerr << "Tries: " << outerTries << " : " << innerTries << '\n';
 
 				result.field = field;
 				return result;
