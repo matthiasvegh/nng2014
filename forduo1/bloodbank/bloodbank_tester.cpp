@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <random>
 #include <iterator>
+#include <iostream>
 
 #include "bloodbank_api.h"
 
@@ -145,6 +146,7 @@ std::size_t getEnv(const char* s, std::size_t d) {
 void runtests(BloodBank& bank)
 {
 
+	std::cout<<"inner: "<<std::getenv("STRIDE1")<<" outer: "<<std::getenv("STRIDE2")<<std::endl;
 	const std::size_t stride1 = getEnv("STRIDE1", 6);
 
 	std::vector<size_t> indices;
