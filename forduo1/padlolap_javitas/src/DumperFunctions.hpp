@@ -3,7 +3,6 @@
 
 #include "Array.hpp"
 #include "Status.hpp"
-#include "Node.hpp"
 #include "SimpleNode.hpp"
 #include <iostream>
 #include <string>
@@ -41,17 +40,6 @@ void dumpStatus(std::ostream &file, const Status &status,
 		const std::string& title = "", int indent = 0)
 {
 	dumpArray(file, status.field, title, indent);
-}
-
-inline
-void dumpNode(std::ostream &file, const Node &node,
-		std::string title = "", int indent = 0)
-{
-	std::ostringstream ss{title};
-	ss << "{" << node.moveDescriptor.p1 << ", " << node.moveDescriptor.p2 << "}: " <<
-		node.cost << " + " << node.heur << " = " << node.costFgv();
-
-	dumpStatus(file, *node.status, ss.str(), indent);
 }
 
 inline
