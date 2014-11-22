@@ -1,17 +1,23 @@
 #include "StatusCreator.hpp"
 #include "DumperFunctions.hpp"
 #include "fastSolve.hpp"
+#include "TargetStatus.hpp"
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
-	if (argc != 3) {
+	if (argc < 2) {
 		throw std::logic_error{"Bad parameter"};
 	}
 	Status status = loadStatusFromFile(argv[1]);
-	Status targetStatus = loadStatusFromFile(argv[2]);
+	boost::optional<unsigned> seed;
+	if (argc > 2) {
+		seed = boost::lexical_cast<unsigned>(argv[2]);
+	}
+
+	Status targetStatus = findTargetStatus(status, seed);
 	auto result = fastSolve(std::move(status), std::move(targetStatus));
 
 	if (result.empty()) {

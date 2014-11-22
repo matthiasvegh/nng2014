@@ -3,4 +3,3 @@ include_rules
 
 : foreach *.cpp |> !cxx |>
 : ./main.o $(SOURCE_DIR)/*.o |> !linker |> padlolap
-: ./findTarget.o $(SOURCE_DIR)/*.o |> !linker |> findTarget
