@@ -4,6 +4,6 @@
 #include "Status.hpp"
 #include <boost/optional.hpp>
 
-Status findTargetStatus(const Status& status, boost::optional<unsigned> seed);
+Status findTargetStatus(Status status, boost::optional<unsigned> seed);
 
 #endif /* SRC_TARGETSTATUS_HPP */

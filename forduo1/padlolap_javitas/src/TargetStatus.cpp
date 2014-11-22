@@ -19,7 +19,7 @@ struct ColorData {
 
 }
 
-Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
+Status findTargetStatus(Status status, boost::optional<unsigned> seed)
 {
 	ColorData data[3];
 	for (Point p: arrayRange(status)) {
@@ -41,45 +41,43 @@ Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 	for (int outerTries = 0; outerTries < 20; ++outerTries) {
 
 		std::vector<std::pair<Point, std::size_t>> startingPoints;
-		Status result = status;
 
 		for (int i = 0; i < 3; ++i) {
 			do {
 				data[i].referencePoint = Point{static_cast<int>(randomColumn(rng)),
 					static_cast<int>(randomRow(rng))};
-			} while (result[data[i].referencePoint] != i);
+			} while (status[data[i].referencePoint] != i);
 
-			result[data[i].referencePoint] = i;
+			status[data[i].referencePoint] = i;
 			startingPoints.emplace_back(data[i].referencePoint, data[i].numberOfTiles);
 		}
 
 		for (int innerTries = 0; innerTries < 1000; ++innerTries) {
-			auto field = result;
+			auto result = status;
 
-			if (grow(field, startingPoints, rng)) {
+			if (grow(result, startingPoints, rng)) {
 				std::cerr << "Tries: " << outerTries << " : " << innerTries << '\n';
 				int partitions;
-				if ((partitions = getNumberOfPartitions(field)) != 3) {
+				if ((partitions = getNumberOfPartitions(result)) != 3) {
 					std::cerr << "partitions = " << partitions<< std::endl;
-					dumpStatus(std::cerr, field);
+					dumpStatus(std::cerr, result);
 					throw std::logic_error{"Bad number of partitions"};
 				}
 
 				std::size_t n[] = {0, 0, 0};
-				for (Point p: arrayRange(field)) {
-					++n[field[p]];
+				for (Point p: arrayRange(result)) {
+					++n[result[p]];
 				}
 
 				for (int i = 0; i < 3; ++i) {
 					std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
 						std::endl;
 					if (n[i] != data[i].numberOfTiles) {
-						dumpStatus(std::cerr, field);
+						dumpStatus(std::cerr, result);
 						throw std::logic_error{"Bad tile number"};
 					}
 				}
 
-				result = field;
 				return result;
 			}
 		}
