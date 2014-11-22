@@ -59,9 +59,7 @@ public:
 			swapBadPositions(0, 2);
 			swapBadPositions(1, 2);
 
-			if (!swapOneBadPosition()) {
-				std::cerr << "baj van!!!" << std::endl;
-			}
+			swapOneBadPosition();
 		}
 	}
 };
