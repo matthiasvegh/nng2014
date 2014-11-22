@@ -11,8 +11,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <random>
 
-template <typename T>
-std::size_t getNumberOfPartitions(const Array<T>& status)
+std::size_t getNumberOfPartitions(const Array<int>& status)
 {
 	int result = 0;
 	Array<bool> visited(status.width(), status.height(), false);
@@ -26,25 +25,24 @@ std::size_t getNumberOfPartitions(const Array<T>& status)
 	return result;
 }
 
-template <typename T>
 struct GrowData {
 	std::deque<Point> next;
 	Point nextSearch;
 	bool stuck = false;
-	T value;
+	int value;
 	std::size_t size = 0;
 	std::size_t targetSize = 0;
 };
 
-template <typename T, typename RandomGenerator>
+template <typename RandomGenerator>
 class Grow {
-	Array<T> originalStatus;
-	Array<T>& status;
+	Array<int> originalStatus;
+	Array<int>& status;
 	RandomGenerator& rng;
 	Array<bool> visited{status.width(), status.height()};
-	std::vector<GrowData<T>> datas;
+	std::vector<GrowData> datas;
 
-	void flood(Point p0, GrowData<T>& data, bool updateSize = true)
+	void flood(Point p0, GrowData& data, bool updateSize = true)
 	{
 		std::vector<Point> pointsToVisit{p0};
 		pointsToVisit.reserve(status.width()*status.height());
@@ -71,7 +69,7 @@ class Grow {
 		}
 	}
 
-	void occupy(Point p, GrowData<T>& data)
+	void occupy(Point p, GrowData& data)
 	{
 		status[p] = data.value;
 		data.next.push_back(p+Point::p10);
@@ -81,7 +79,7 @@ class Grow {
 		++data.size;
 	}
 
-	void growIteration(GrowData<T>& data)
+	void growIteration(GrowData& data)
 	{
 		Point p = data.next.front();
 		data.next.pop_front();
@@ -97,7 +95,7 @@ class Grow {
 		}
 	}
 
-	bool checkUnity(Point p, T originalValue)
+	bool checkUnity(Point p, int originalValue)
 	{
 		Bounds bounds{Point{p.x - 1, p.y - 1}, Point{p.x + 2, p.y + 2}};
 		for (Point p: PointRange(bounds.min, bounds.max)) {
@@ -117,7 +115,7 @@ class Grow {
 	}
 
 	template <typename Condition>
-	bool perturbIteration(GrowData<T>& data, Condition condition)
+	bool perturbIteration(GrowData& data, Condition condition)
 	{
 		visited.fill(false);
 		data.next.clear();
@@ -159,7 +157,7 @@ class Grow {
 	}
 
 public:
-	Grow(Array<T>& status, RandomGenerator& rng):
+	Grow(Array<int>& status, RandomGenerator& rng):
 		originalStatus(status), status(status), rng(rng)
 	{
 
@@ -180,16 +178,16 @@ public:
 		}
 
 		// Phase 2: Occupy until desired size is reached
-		//iteration([](const GrowData<T>& data)
+		//iteration([](const GrowData& data)
 			//{
 				//return !data.next.empty() && data.size < data.targetSize;
-			//}, [&](GrowData<T>& data) { growIteration(data); });
+			//}, [&](GrowData& data) { growIteration(data); });
 
 		// Phase 3: Occupy all remaining fields
-		iteration([](const GrowData<T>& data)
+		iteration([](const GrowData& data)
 			{
 				return !data.next.empty();
-			}, [&](GrowData<T>& data) { growIteration(data); });
+			}, [&](GrowData& data) { growIteration(data); });
 
 		// Phase 4: Perturb the edges randomly
 		boost::random::uniform_int_distribution<std::size_t> randomId{0, datas.size() - 1};
@@ -204,12 +202,12 @@ public:
 		}
 
 		// Phase 5: Occupy from each other until equilibrium is reached
-		iteration([](const GrowData<T>& data)
+		iteration([](const GrowData& data)
 			{
 				//std::cerr << "--> " << data.value << ": " << data.size <<
 						//" -> " << data.targetSize << " " << data.stuck << '\n';
 				return !data.stuck && data.size < data.targetSize;
-			}, [&](GrowData<T>& data)
+			}, [&](GrowData& data)
 			{
 				if (!perturbIteration(data, [&](Point p)
 					{
@@ -221,18 +219,18 @@ public:
 				}
 			});
 
-		return std::find_if(datas.begin(), datas.end(), [](const GrowData<T>& data)
+		return std::find_if(datas.begin(), datas.end(), [](const GrowData& data)
 			{
 				return data.size != data.targetSize;
 			}) == datas.end();
 	}
 };
 
-template <typename T, typename RandomGenerator>
-bool grow(Array<T>& status, const std::vector<std::pair<Point, std::size_t>>& startingPoints,
+template <typename RandomGenerator>
+bool grow(Array<int>& status, const std::vector<std::pair<Point, std::size_t>>& startingPoints,
 		RandomGenerator& rng)
 {
-	return Grow<T, RandomGenerator>{status, rng}(startingPoints);
+	return Grow<RandomGenerator>{status, rng}(startingPoints);
 }
 
 
