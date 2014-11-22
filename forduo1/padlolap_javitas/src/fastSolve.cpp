@@ -17,7 +17,7 @@ public:
 		auto& bad1 = badPositions[Point{color1, color2}];
 		auto& bad2 = badPositions[Point{color2, color1}];
 		while (!bad1.empty() && !bad2.empty()) {
-			std::swap(status.field[bad1.back()], status.field[bad2.back()]);
+			std::swap(status[bad1.back()], status[bad2.back()]);
 			result.emplace_back(status, MoveDescriptor{bad1.back(), bad2.back()});
 			bad1.pop_back();
 			bad2.pop_back();
@@ -26,17 +26,17 @@ public:
 
 	bool isOk(Point p)
 	{
-		return status.field[p] == targetStatus.field[p];
+		return status[p] == targetStatus[p];
 	}
 
 	bool swapOneBadPosition()
 	{
-		auto range = arrayRange(status.field);
+		auto range = arrayRange(status);
 		for (auto it = range.begin(); it != range.end(); ++it) {
 			if (!isOk(*it)) {
 				for (auto it2 = std::next(it); it2 != range.end(); ++it2) {
-					if (!isOk(*it2) && status.field[*it2] == targetStatus.field[*it]) {
-						std::swap(status.field[*it], status.field[*it2]);
+					if (!isOk(*it2) && status[*it2] == targetStatus[*it]) {
+						std::swap(status[*it], status[*it2]);
 						result.emplace_back(status,
 								MoveDescriptor{*it, *it2});
 						return true;
@@ -51,8 +51,8 @@ public:
 	{
 		while (status != targetStatus) {
 			badPositions.reset(3, 3);
-			for (Point p: arrayRange(status.field)) {
-				badPositions[Point{status.field[p], targetStatus.field[p]}].push_back(p);
+			for (Point p: arrayRange(status)) {
+				badPositions[Point{status[p], targetStatus[p]}].push_back(p);
 			}
 
 			swapBadPositions(0, 1);

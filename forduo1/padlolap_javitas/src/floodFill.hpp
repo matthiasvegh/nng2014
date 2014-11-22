@@ -26,9 +26,10 @@ void floodFill(const Array<T>& status, Point p0, Array<bool>& result, const Boun
 			static_cast<int>(status.height())};
 	}
 	std::vector<Point> pointsToVisit;
-	pointsToVisit.reserve((realBounds.max.x - realBounds.min.x) * (realBounds.max.y - realBounds.min.y));
+	pointsToVisit.reserve((realBounds.max.x - realBounds.min.x) *
+			(realBounds.max.y - realBounds.min.y));
 	pointsToVisit.push_back(p0);
-	Value value = status[p0];
+	auto value = status[p0];
 
 	while (!pointsToVisit.empty()) {
 		Point p = pointsToVisit.back();
@@ -47,12 +48,6 @@ void floodFill(const Array<T>& status, Point p0, Array<bool>& result, const Boun
 			}
 		}
 	}
-}
-
-inline
-void floodFill(const Status& status, Point p0, Array<bool>& result)
-{
-	floodFill(status.field, p0, result);
 }
 
 

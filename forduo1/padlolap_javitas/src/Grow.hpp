@@ -11,7 +11,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <random>
 
-std::size_t getNumberOfPartitions(const Array<int>& status)
+std::size_t getNumberOfPartitions(const Status& status)
 {
 	int result = 0;
 	Array<bool> visited(status.width(), status.height(), false);
@@ -36,8 +36,8 @@ struct GrowData {
 
 template <typename RandomGenerator>
 class Grow {
-	Array<int> originalStatus;
-	Array<int>& status;
+	Status originalStatus;
+	Status& status;
 	RandomGenerator& rng;
 	Array<bool> visited{status.width(), status.height()};
 	std::vector<GrowData> datas;
@@ -157,7 +157,7 @@ class Grow {
 	}
 
 public:
-	Grow(Array<int>& status, RandomGenerator& rng):
+	Grow(Status& status, RandomGenerator& rng):
 		originalStatus(status), status(status), rng(rng)
 	{
 
@@ -227,7 +227,7 @@ public:
 };
 
 template <typename RandomGenerator>
-bool grow(Array<int>& status, const std::vector<std::pair<Point, std::size_t>>& startingPoints,
+bool grow(Status& status, const std::vector<std::pair<Point, std::size_t>>& startingPoints,
 		RandomGenerator& rng)
 {
 	return Grow<RandomGenerator>{status, rng}(startingPoints);

@@ -19,6 +19,6 @@ int main(int argc, char* argv[])
 	}
 
 	Status target = findTargetStatus(status, seed);
-	std::cout << target.field.height() << " " << target.field.width() << std::endl;
+	std::cout << target.height() << " " << target.width() << std::endl;
 	dumpStatus(std::cout, target);
 }

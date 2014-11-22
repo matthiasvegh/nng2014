@@ -4,9 +4,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-
-class Status;
-class Table;
+#include "Status.hpp"
 
 Status
 createStatus(int width, int height, const std::vector<std::string>& lines);

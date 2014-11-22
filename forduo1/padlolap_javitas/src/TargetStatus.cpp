@@ -22,8 +22,8 @@ struct ColorData {
 Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 {
 	ColorData data[3];
-	for (Point p: arrayRange(status.field)) {
-		++data[status.field[p]].numberOfTiles;
+	for (Point p: arrayRange(status)) {
+		++data[status[p]].numberOfTiles;
 	}
 
 	boost::random::mt19937 rng;
@@ -35,8 +35,8 @@ Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 		rng.seed(rnd);
 	}
 
-	boost::random::uniform_int_distribution<std::size_t> randomColumn{0, status.field.width() - 1};
-	boost::random::uniform_int_distribution<std::size_t> randomRow{0, status.field.height() - 1};
+	boost::random::uniform_int_distribution<std::size_t> randomColumn{0, status.width() - 1};
+	boost::random::uniform_int_distribution<std::size_t> randomRow{0, status.height() - 1};
 
 	for (int outerTries = 0; outerTries < 20; ++outerTries) {
 
@@ -47,18 +47,21 @@ Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 			do {
 				data[i].referencePoint = Point{static_cast<int>(randomColumn(rng)),
 					static_cast<int>(randomRow(rng))};
-			} while (result.field[data[i].referencePoint] != i);
+			} while (result[data[i].referencePoint] != i);
 
-			result.field[data[i].referencePoint] = i;
+			result[data[i].referencePoint] = i;
 			startingPoints.emplace_back(data[i].referencePoint, data[i].numberOfTiles);
 		}
 
 		for (int innerTries = 0; innerTries < 1000; ++innerTries) {
-			auto field = result.field;
+			auto field = result;
 
 			if (grow(field, startingPoints, rng)) {
 				std::cerr << "Tries: " << outerTries << " : " << innerTries << '\n';
-				if (getNumberOfPartitions(field) != 3) {
+				int partitions;
+				if ((partitions = getNumberOfPartitions(field)) != 3) {
+					std::cerr << "partitions = " << partitions<< std::endl;
+					dumpStatus(std::cerr, field);
 					throw std::logic_error{"Bad number of partitions"};
 				}
 
@@ -71,11 +74,12 @@ Status findTargetStatus(const Status& status, boost::optional<unsigned> seed)
 					std::cerr << i << ": " << n[i] << " -> " << data[i].numberOfTiles <<
 						std::endl;
 					if (n[i] != data[i].numberOfTiles) {
+						dumpStatus(std::cerr, field);
 						throw std::logic_error{"Bad tile number"};
 					}
 				}
 
-				result.field = field;
+				result = field;
 				return result;
 			}
 		}

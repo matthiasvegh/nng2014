@@ -9,7 +9,7 @@ Status
 createStatus(int width, int height, const std::vector<std::string>& lines)
 {
 	Status result;
-	result.field.reset(width, height, -1);
+	result.reset(width, height, -1);
 	if (height != static_cast<int>(lines.size())) {
 		throw std::logic_error{"Bad input size"};
 	}
@@ -17,7 +17,7 @@ createStatus(int width, int height, const std::vector<std::string>& lines)
 	for (p.y = 0; p.y < height; ++p.y) {
 		std::istringstream ss{lines[p.y]};
 		for (p.x = 0; p.x < width; ++p.x) {
-			ss >> result.field[p];
+			ss >> result[p];
 		}
 	}
 	return result;

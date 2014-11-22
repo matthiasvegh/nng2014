@@ -39,7 +39,7 @@ inline
 void dumpStatus(std::ostream &file, const Status &status,
 		const std::string& title = "", int indent = 0)
 {
-	dumpArray(file, status.field, title, indent);
+	dumpArray(file, status, title, indent);
 }
 
 inline
