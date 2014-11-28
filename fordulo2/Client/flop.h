@@ -40,6 +40,7 @@ std::string getFlopResponse(const ServerResponse& data)
 	for (const auto& value: cardTypes) {
 		std::cerr << value.first << " -> " << value.second << "; ";
 	}
+	std::cerr << std::endl;
 
 	int value = 0;
 	int el = 1;
@@ -49,7 +50,7 @@ std::string getFlopResponse(const ServerResponse& data)
 		case 5: el = 5; value = 10000 * largest.second; break;
 		case 4: el = 4; value = 2000 * largest.second; break;
 		case 3: {
-			--it;
+			++it;
 			if (it != cardTypes.rend() && it->first == 2) {
 				value = 1000 * (largest.second + it->second);
 				el = 5;
@@ -60,7 +61,7 @@ std::string getFlopResponse(const ServerResponse& data)
 			break;
 		}
 		case 2: {
-			--it;
+			++it;
 			if (it != cardTypes.rend() && it->first == 2) {
 				el = 4;
 				value = 10 * (largest.second + it->second);
