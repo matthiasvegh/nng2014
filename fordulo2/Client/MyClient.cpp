@@ -57,13 +57,22 @@ ServerResponse parseServerResponse(const std::vector<std::string>& serverRespons
 		boost::lexical_cast<std::size_t>(line[2])
 	};
 	line.clear();
-	// handle map here
 
 	boost::split(line, serverResponse[4], boost::is_any_of(" "));
 	trimAll(line);
 	response.numberOfPlayers = boost::lexical_cast<std::size_t>(line[1]);
 	std::size_t endOfPlayers = 5+response.numberOfPlayers;
 	line.clear();
+
+	for(std::size_t i = 5; i<response.numberOfPlayers+5; ++i) {
+		std::stringstream ss;
+		ss << serverResponse[i] << std::endl;
+		int id, cash;
+		ss >> id >> cash;
+		std::string name;
+		ss >> name;
+		response.playerStatistics[id] = std::make_pair(cash, name);
+	}
 
 	boost::split(line, serverResponse[endOfPlayers], boost::is_any_of(" "));
 	trimAll(line);
