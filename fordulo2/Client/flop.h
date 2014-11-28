@@ -28,12 +28,12 @@ std::string getFlopResponse(const ServerResponse& data)
 		++numCards[card];
 	}
 
-	std::map<std::size_t, std::size_t> cardTypes; // mennyi -> mibol
+	std::multimap<std::size_t, std::size_t> cardTypes; // mennyi -> mibol
 
 	std::cerr << "\nnumCards: ";
 	for (const auto& value: numCards) {
 		std::cerr << value.first << " -> " << value.second << "; ";
-		cardTypes[value.second] = value.first;
+		cardTypes.insert({value.second, value.first});
 	}
 
 	std::cerr << "\ncardTypes: ";
