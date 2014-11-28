@@ -67,8 +67,7 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 		ss << serverResponse[i] << std::endl;
 		int id, cash;
 		ss >> id >> cash;
-		std::string name;
-		ss >> name;
+		std::string name(ss.str());
 		response.playerStatistics[id] = std::make_pair(cash, name);
 	}
 
