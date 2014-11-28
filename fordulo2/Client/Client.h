@@ -53,7 +53,7 @@ struct ResponseHistory {
 		if(r.isNew) {
 			responses.clear();
 		}
-		responses.push_back(std::move(r));
+		responses.push_back(r);
 		myId = r.myId;
 		if(r.isOver) {
 			if(r.winner == myId) {
