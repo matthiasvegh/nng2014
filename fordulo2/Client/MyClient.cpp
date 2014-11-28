@@ -29,7 +29,7 @@ void trimAll(std::vector<std::string>& s) {
 	}
 }
 
-ServerResponse parseServerResponse(const std::vector<std::string>& serverResponse) {
+ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 	ServerResponse response;
 	std::vector<std::string> line;
 
@@ -85,7 +85,28 @@ ServerResponse parseServerResponse(const std::vector<std::string>& serverRespons
 	response.blind = boost::lexical_cast<std::size_t>(line[1]);
 	line.clear();
 
+	std::size_t numberOfCards = 0;
 	// get extra optional fields
+	auto it = std::find_if(serverResponse.begin(), serverResponse.end(), [&](auto l) {
+		boost::split(line, l, boost::is_any_of(" "));
+		if(line[0] == "cards") {
+			boost::trim(line[1]);
+			numberOfCards = boost::lexical_cast<std::size_t>(line[1]);
+			return true;
+		}
+		return false;
+	});
+
+	std::size_t index = std::distance(serverResponse.begin(), it);
+
+	line.clear();
+
+	for(std::size_t i = 1; i< numberOfCards+1; ++i) {
+		boost::trim(serverResponse[index+i]);
+		response.commonCards.push_back( 
+				boost::lexical_cast<std::size_t>(serverResponse[index+i]));
+	}
+
 	return response;
 }
 
