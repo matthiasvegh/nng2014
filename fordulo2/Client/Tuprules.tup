@@ -6,8 +6,7 @@ LD = $(CXX)
 
 export EXTRA_CPP_FLAGS
 export EXTRA_LD_FLAGS
-export LD_LIBRARY_PATH
-export LIBRARY_PATH
+export BOOST_LIB
 
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra -Wno-mismatched-tags
@@ -15,11 +14,10 @@ CPP_FLAGS += -O0 -g
 CPP_FLAGS += -ftemplate-backtrace-limit=0
 CPP_FLAGS += $EXTRA_CPP_FLAGS
 
-LIBS += -lboost_program_options
-LIBS += -lboost_random
-LIBS += -lboost_date_time
-LIBS += -lboost_system
-LIBS += @(PROFILER_LIBS)
+LIBS += $BOOST_LIB/libboost_program_options.a
+LIBS += $BOOST_LIB/libboost_random.a
+LIBS += $BOOST_LIB/libboost_date_time.a
+LIBS += $BOOST_LIB/libboost_system.a
 
 LD_FLAGS += $EXTRA_LD_FLAGS
 
