@@ -30,8 +30,15 @@ std::string getFlopResponse(const ServerResponse& data)
 
 	std::map<std::size_t, std::size_t> cardTypes; // mennyi -> mibol
 
+	std::cerr << "\nnumCards: ";
 	for (const auto& value: numCards) {
+		std::cerr << value.first << " -> " << value.second;
 		cardTypes[value.second] += value.first;
+	}
+
+	std::cerr << "\ncardTypes: ";
+	for (const auto& value: cardTypes) {
+		std::cerr << value.first << " -> " << value.second;
 	}
 
 	int value = 0;
