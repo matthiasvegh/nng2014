@@ -134,7 +134,7 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 		return false;
 	});
 
-	if(winnerIt == serverResponse.end()) {
+	if(winnerIt != serverResponse.end()) {
 		response.isOver = true;
 	}
 
