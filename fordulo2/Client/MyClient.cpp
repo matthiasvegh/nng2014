@@ -123,6 +123,21 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 		response.isNew = true;
 	}
 
+	auto winnerIt = std::find_if(serverResponse.begin(), serverResponse.end(), [&](auto l) {
+		std::deque<std::string> line;
+		boost::split(line, l, boost::is_any_of(" "));
+		if(line[0] == "winner") {
+			boost::trim(line[1]);
+			response.winner = boost::lexical_cast<std::size_t>(line[1]);
+			return true;
+		}
+		return false;
+	});
+
+	if(winnerIt == serverResponse.end()) {
+		response.isNew = true;
+	}
+
 	return response;
 }
 

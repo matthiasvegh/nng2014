@@ -20,6 +20,8 @@ struct ServerResponse {
 		std::vector<std::size_t> commonCards;
 		std::pair<std::size_t, std::string> lastAction;
 		bool isNew = false;
+		bool isOver = false;
+		std::size_t winner = 0;
 
 		void printPlayers() const {
 
@@ -44,6 +46,8 @@ struct ServerResponse {
 struct ResponseHistory {
 	std::vector<ServerResponse> responses;
 	std::size_t myId;
+	std::size_t wins = 0;
+	std::size_t lossesWithBets = 0;
 
 	void addServerResponse(ServerResponse r) {
 		if(r.isNew) {
@@ -51,7 +55,23 @@ struct ResponseHistory {
 		}
 		responses.push_back(std::move(r));
 		myId = r.myId;
+		if(r.isOver) {
+			if(r.winner == myId) {
+				++wins;
+			} else {
+
+				auto betIterator = std::find_if(responses.begin(), responses.end(), [&](auto r) {
+					return r.lastAction.second == "bet" && r.lastAction.first == myId;
+				});
+
+				if (betIterator != responses.end()) {
+					++lossesWithBets;
+				}
+
+			}
+		}
 		std::cerr<<"Current round is "<<responses.size()<<" turns old"<<std::endl;
+		std::cerr<<"To date, we have been to aggressive: "<<lossesWithBets<< " times, and have won: "<<wins<<" times"<<std::endl;
 	}
 
 	std::size_t numberOfEnemyBets() const {
@@ -65,6 +85,8 @@ struct ResponseHistory {
 			return a.lastAction.second == "bet";
 		});
 	}
+
+
 };
 
 
