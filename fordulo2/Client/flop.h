@@ -70,8 +70,10 @@ std::string getFlopResponse(const ServerResponse& data)
 		case 3: {
 			++it;
 			if (it != cardTypes.rend() && it->first == 2) {
-				value = 1000 * (largest.second + it->second);
-				el = 5;
+				if (data.myCards.at(0) == data.myCards.at(1)) {
+					return "bet";
+				}
+				return "call";
 			} else {
 				value = 200 * largest.second;
 				el = 3;
