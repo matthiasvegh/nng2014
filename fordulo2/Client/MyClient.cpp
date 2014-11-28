@@ -109,8 +109,11 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 		std::deque<std::string> line;
 		boost::split(line, l, boost::is_any_of(" "));
 		if(line[0] == "action") {
-			line.pop_front();
-			response.lastAction = boost::algorithm::join(line, " ");
+			std::size_t player = boost::lexical_cast<std::size_t>(line[1]);
+			boost::trim(line[2]);
+			std::string action = line[2];
+
+			response.lastAction = std::make_pair(player, action);
 			return true;
 		}
 		return false;
@@ -138,6 +141,7 @@ std::string MYCLIENT::HandleServerResponse(
 	ServerResponse response = parseServerResponse(serverResponse);
 	static ResponseHistory currentHistory;
 	currentHistory.addServerResponse(response);
+	std::cerr<<"Current number of bets: "<<currentHistory.numberOfBets()<<std::endl;
 
 	response.printPlayers();
 	auto resp = flopDispatch(response);

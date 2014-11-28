@@ -18,7 +18,7 @@ struct ServerResponse {
 		std::size_t pot;
 		std::size_t blind;
 		std::vector<std::size_t> commonCards;
-		std::string lastAction;
+		std::pair<std::size_t, std::string> lastAction;
 		bool isNew = false;
 
 		void printPlayers() const {
@@ -50,6 +50,12 @@ struct ResponseHistory {
 		}
 		responses.push_back(std::move(r));
 		std::cerr<<"Current round is "<<responses.size()<<" turns old"<<std::endl;
+	}
+
+	std::size_t numberOfBets() const {
+		return std::count_if(responses.begin(), responses.end(), [](auto a) {
+			return a.lastAction.second == "bet";
+		});
 	}
 };
 
