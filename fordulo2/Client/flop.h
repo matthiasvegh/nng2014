@@ -87,8 +87,7 @@ std::string getFlopResponse(const ServerResponse& data)
 		}
 	}
 
-	value *= el;
-	value /= fl;
+	value *= (el - fl);
 	std::cerr << "\nadjusted value = " << value;
 
 	std::cerr << std::endl;
