@@ -91,6 +91,7 @@ ServerResponse parseServerResponse(const std::vector<std::string>& serverRespons
 std::string MYCLIENT::HandleServerResponse(std::vector<std::string> &serverResponse)
 {
 	ServerResponse response = parseServerResponse(serverResponse);
+	response.printPlayers();
 	return preFlop(response);
 }
 

@@ -8,7 +8,7 @@ export EXTRA_CPP_FLAGS
 export EXTRA_LD_FLAGS
 export BOOST_LIB
 
-CPP_FLAGS += -std=c++11
+CPP_FLAGS += -std=c++1y
 CPP_FLAGS += -Wall -Wextra -Wno-mismatched-tags
 CPP_FLAGS += -O0 -g
 CPP_FLAGS += -ftemplate-backtrace-limit=0

@@ -5,6 +5,8 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <algorithm>
+#include <iostream>
 
 struct ServerResponse {
 		std::size_t tickId, gameId;
@@ -17,6 +19,24 @@ struct ServerResponse {
 		std::size_t blind;
 		std::vector<std::size_t> commonCards;
 		std::string lastAction;
+
+		void printPlayers() const {
+
+			std::vector<std::pair<std::size_t, std::string>> players;
+
+			for(const auto& p: playerStatistics) {
+				players.push_back(std::make_pair(p.second.first, p.second.second));
+			}
+
+			std::sort(players.begin(), players.end(),
+			[](auto l, auto r){
+				return l.first < r.first;
+			});
+			for(auto& p: players) {
+				std::cerr<<"$"<<p.first<<"\t"<<p.second<<std::endl;
+			}
+			return;
+		}
 };
 
 
