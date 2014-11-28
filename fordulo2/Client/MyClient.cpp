@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include "preFlop.h"
+#include "flop.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
