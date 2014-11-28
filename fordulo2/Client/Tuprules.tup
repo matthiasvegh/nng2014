@@ -13,6 +13,7 @@ CPP_FLAGS += -Wall -Wextra -Wno-mismatched-tags
 CPP_FLAGS += -O0 -g
 CPP_FLAGS += -ftemplate-backtrace-limit=0
 CPP_FLAGS += $EXTRA_CPP_FLAGS
+CPP_FLAGS += -isystem $BOOST_LIB/../include
 
 LIBS += $BOOST_LIB/libboost_program_options.a
 LIBS += $BOOST_LIB/libboost_random.a

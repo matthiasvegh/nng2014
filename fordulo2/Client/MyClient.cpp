@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Client.h"
+#include "preFlop.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -66,7 +67,7 @@ ServerResponse parseServerResponse(const std::vector<std::string>& serverRespons
 std::string MYCLIENT::HandleServerResponse(std::vector<std::string> &serverResponse)
 {
 	ServerResponse response = parseServerResponse(serverResponse);
-	return "";
+	return preFlop(response);
 }
 
 
