@@ -75,6 +75,9 @@ std::string getFlopResponse(const ServerResponse& data)
 				}
 				return "call";
 			} else {
+				if (data.myCards.at(0) == data.myCards.at(1)) {
+					return "bet";
+				}
 				value = 200 * largest.second;
 				el = 3;
 			}
