@@ -42,13 +42,31 @@ std::string getFlopResponse(const ServerResponse& data)
 	}
 	std::cerr << std::endl;
 
+	std::map<std::size_t, std::size_t> numCardsDesk; // mibol -> mennyi
+	for (auto card: data.commonCards) {
+		++numCardsDesk[card];
+	}
+
+	std::size_t fl = 1;
+	for (const auto& value: numCardsDesk) {
+		if (value.second > 1) {
+			fl = std::max(fl, value.second);
+		}
+	}
+
 	int value = 0;
 	int el = 1;
 	auto it = cardTypes.rbegin();
 	auto largest = *it;
 	switch (largest.first) {
-		case 5: el = 5; value = 10000 * largest.second; break;
-		case 4: el = 4; value = 2000 * largest.second; break;
+		case 5: return "bet";
+		case 4: {
+			if (fl < 3) {
+				return "bet";
+			}
+
+			return "call";
+		}
 		case 3: {
 			++it;
 			if (it != cardTypes.rend() && it->first == 2) {
@@ -74,18 +92,6 @@ std::string getFlopResponse(const ServerResponse& data)
 	};
 
 	std::cerr << "\nvalue = " << value;
-
-	std::map<std::size_t, std::size_t> numCardsDesk; // mibol -> mennyi
-	for (auto card: data.commonCards) {
-		++numCardsDesk[card];
-	}
-
-	std::size_t fl = 1;
-	for (const auto& value: numCardsDesk) {
-		if (value.second > 1) {
-			fl = std::max(fl, value.second);
-		}
-	}
 
 	value *= (el - fl);
 	std::cerr << "\nadjusted value = " << value;
