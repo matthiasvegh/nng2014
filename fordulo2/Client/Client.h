@@ -52,6 +52,12 @@ struct ResponseHistory {
 		std::cerr<<"Current round is "<<responses.size()<<" turns old"<<std::endl;
 	}
 
+	std::size_t numberOfEnemyBets() const {
+		return std::count_if(responses.begin(), responses.end(), [](auto a) {
+			return a.lastAction.second == "bet" && a.lastAction.first != 7;
+		});
+	}
+
 	std::size_t numberOfBets() const {
 		return std::count_if(responses.begin(), responses.end(), [](auto a) {
 			return a.lastAction.second == "bet";
