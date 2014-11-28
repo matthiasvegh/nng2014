@@ -142,6 +142,7 @@ std::string MYCLIENT::HandleServerResponse(
 	static ResponseHistory currentHistory;
 	currentHistory.addServerResponse(response);
 	std::cerr<<"Current number of bets: "<<currentHistory.numberOfBets()<<std::endl;
+	std::cerr<<"Current number of enemy bets: "<<currentHistory.numberOfEnemyBets()<<std::endl;
 
 	response.printPlayers();
 	auto resp = flopDispatch(response);
