@@ -43,18 +43,20 @@ struct ServerResponse {
 
 struct ResponseHistory {
 	std::vector<ServerResponse> responses;
+	std::size_t myId;
 
 	void addServerResponse(ServerResponse r) {
 		if(r.isNew) {
 			responses.clear();
 		}
 		responses.push_back(std::move(r));
+		myId = r.myId;
 		std::cerr<<"Current round is "<<responses.size()<<" turns old"<<std::endl;
 	}
 
 	std::size_t numberOfEnemyBets() const {
-		return std::count_if(responses.begin(), responses.end(), [](auto a) {
-			return a.lastAction.second == "bet" && a.lastAction.first != 7;
+		return std::count_if(responses.begin(), responses.end(), [&](auto a) {
+			return a.lastAction.second == "bet" && a.lastAction.first != myId;
 		});
 	}
 
