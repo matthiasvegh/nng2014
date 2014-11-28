@@ -34,8 +34,9 @@ struct ServerResponse {
 				return l.first > r.first;
 			});
 			for(auto& p: players) {
-				std::cerr<<"$"<<p.first<<"\t"<<p.second<<std::endl;
+				std::cerr<<"$"<<p.first<<"\t"<<p.second;
 			}
+			std::cerr<<std::endl;
 			return;
 		}
 };
