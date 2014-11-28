@@ -30,7 +30,7 @@ struct ServerResponse {
 
 			std::sort(players.begin(), players.end(),
 			[](auto l, auto r){
-				return l.first < r.first;
+				return l.first > r.first;
 			});
 			for(auto& p: players) {
 				std::cerr<<"$"<<p.first<<"\t"<<p.second<<std::endl;
