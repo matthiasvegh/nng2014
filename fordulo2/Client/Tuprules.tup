@@ -6,6 +6,8 @@ LD = $(CXX)
 
 export EXTRA_CPP_FLAGS
 export EXTRA_LD_FLAGS
+export LD_LIBRARY_PATH
+export LIBRARY_PATH
 
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra -Wno-mismatched-tags
