@@ -175,13 +175,13 @@ int main(int argc, char* argv[])
 	}
 	/**/
 
-	if (!pClient->Init(server_address))
-	{
-		std::cout<<"Connection failed"<<std::endl;
-	} else
-	{
-		pClient->Run();
-	}
+//	if (!pClient->Init(server_address))
+//	{
+//		std::cout<<"Connection failed"<<std::endl;
+//	} else
+//	{
+//		pClient->Run();
+//	}
 	delete pClient;
 	return 0;
 }
