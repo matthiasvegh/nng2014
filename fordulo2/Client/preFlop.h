@@ -1,10 +1,16 @@
 #pragma once
 #include "Client.h"
 #include <cassert>
+#include <iostream>
 
 const char* preFlop(const ServerResponse& sr) {
 	const auto& myCards = sr.myCards;
 	if (myCards.size() < 2) return "check";
+
+	for (auto c : myCards) {
+		std::cerr << c << " ";
+	}
+	std::cerr << std::endl;
 
 	auto a = myCards.at(0);
 	auto b = myCards.at(1);
