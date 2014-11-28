@@ -22,8 +22,8 @@ const char* preFlop(const ServerResponse& sr) {
 		if (a > c1) return "bet";
 		return "call";
 	} else {
-		if (a > c2 && b > c2) return "call";
-		return "fold";
+		if (a > c2 || b > c2) return "call";
+		return "check";
 	}
 }
 

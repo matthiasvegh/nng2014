@@ -85,10 +85,10 @@ std::string getFlopResponse(const ServerResponse& data)
 
 	std::cerr << std::endl;
 
-	if (value < 1000) {
+	if (value < 10) {
 		return "check";
 	}
-	if (value < 5000) {
+	if (value < 1000) {
 		return "call";
 	}
 	return "bet";
