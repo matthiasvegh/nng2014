@@ -32,13 +32,13 @@ std::string getFlopResponse(const ServerResponse& data)
 
 	std::cerr << "\nnumCards: ";
 	for (const auto& value: numCards) {
-		std::cerr << value.first << " -> " << value.second;
-		cardTypes[value.second] += value.first;
+		std::cerr << value.first << " -> " << value.second << "; ";
+		cardTypes[value.second] = value.first;
 	}
 
 	std::cerr << "\ncardTypes: ";
 	for (const auto& value: cardTypes) {
-		std::cerr << value.first << " -> " << value.second;
+		std::cerr << value.first << " -> " << value.second << "; ";
 	}
 
 	int value = 0;
