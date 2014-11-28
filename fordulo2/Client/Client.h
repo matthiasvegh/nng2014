@@ -19,6 +19,7 @@ struct ServerResponse {
 		std::size_t blind;
 		std::vector<std::size_t> commonCards;
 		std::string lastAction;
+		bool isNew = false;
 
 		void printPlayers() const {
 
@@ -37,6 +38,18 @@ struct ServerResponse {
 			}
 			return;
 		}
+};
+
+struct ResponseHistory {
+	std::vector<ServerResponse> responses;
+
+	void addServerResponse(ServerResponse r) {
+		if(r.isNew) {
+			responses.clear();
+		}
+		responses.push_back(std::move(r));
+		std::cerr<<"Current round is "<<responses.size()<<" turns old"<<std::endl;
+	}
 };
 
 

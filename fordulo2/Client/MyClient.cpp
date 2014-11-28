@@ -103,6 +103,23 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 				boost::lexical_cast<std::size_t>(serverResponse[index+i]));
 	}
 
+	line.clear();
+
+	auto actionIt = std::find_if(serverResponse.begin(), serverResponse.end(), [&](auto l) {
+		std::deque<std::string> line;
+		boost::split(line, l, boost::is_any_of(" "));
+		if(line[0] == "action") {
+			line.pop_front();
+			response.lastAction = boost::algorithm::join(line, " ");
+			return true;
+		}
+		return false;
+	});
+
+	if(actionIt != serverResponse.end()) {
+		response.isNew = true;
+	}
+
 	return response;
 }
 
@@ -119,6 +136,9 @@ std::string flopDispatch(const ServerResponse& sr) {
 std::string MYCLIENT::HandleServerResponse(
 	std::vector<std::string>& serverResponse) {
 	ServerResponse response = parseServerResponse(serverResponse);
+	static ResponseHistory currentHistory;
+	currentHistory.addServerResponse(response);
+
 	response.printPlayers();
 	auto resp = flopDispatch(response);
 	std::cerr << "Resp : " << resp << std::endl;
