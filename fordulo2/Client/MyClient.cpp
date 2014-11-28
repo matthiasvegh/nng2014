@@ -116,7 +116,7 @@ ServerResponse parseServerResponse(std::vector<std::string> serverResponse) {
 		return false;
 	});
 
-	if(actionIt != serverResponse.end()) {
+	if(actionIt == serverResponse.end()) {
 		response.isNew = true;
 	}
 
