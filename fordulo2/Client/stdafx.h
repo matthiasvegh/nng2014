@@ -20,12 +20,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
 #endif
 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <string.h>
 
 
 // TODO: reference additional headers your program requires here
